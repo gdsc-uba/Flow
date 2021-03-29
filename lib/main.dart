@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flow/Components/flow_location.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'dart:async';
-import 'package:flow/Screens/AskingPermissions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
