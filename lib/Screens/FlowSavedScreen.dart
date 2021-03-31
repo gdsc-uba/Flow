@@ -1,13 +1,53 @@
+import 'dart:convert';
+
+import 'package:flow/Components/flow_shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/constants.dart';
 import 'package:flow/Components/flow_app_bar.dart';
 import 'package:flow/Components/search_bar.dart';
-
 import 'package:flow/Components/sources_list_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class FlowSavedScreen extends StatelessWidget {
+class FlowSavedScreen extends StatefulWidget {
   @override
+  _FlowSavedScreenState createState() => _FlowSavedScreenState();
+}
+
+class _FlowSavedScreenState extends State<FlowSavedScreen> {
+  @override
+  Widget BuildSavedList() {
+    return WaterSourcesListItem(
+      id: 'swr',
+      distance: 'N/A m',
+      isflowingiconlink: 'Assets/icons/svgs/fi-rr-directions.svg',
+    );
+  }
+
+  // ///instantialintg shared Prefs
+  // SharedPreferences FlowSharedPreferences;
+  //
+  // @override
+  // void initState() {
+  //   initFlowSharedPreferences();
+  //   super.initState();
+  // }
+  //
+  // ///initialising Shared Preferences
+  // initFlowSharedPreferences() async {
+  //   FlowSharedPreferences = await SharedPreferences.getInstance();
+  // }
+  //
+  // ///method to get Shared Prefs data
+  //
+  // void retrievSPData(){
+  //   List<String> SPList = FlowSharedPreferences.getStringList('list');
+  //   SPList = SPList.map((item) => prefs.getStringList.(json.decode(item)))
+  //             .toList();
+  //
+  //
+  // }
+
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     // final screenWidth = MediaQuery.of(context).size.width;
@@ -30,27 +70,13 @@ class FlowSavedScreen extends StatelessWidget {
             ),
             Container(
               margin: EdgeInsets.only(top: 50),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    WaterSourcesListItem(
-                      id: '064',
-                      distance: '456',
-                      isflowingiconlink: 'Assets/icons/svgs/fi-rr-heart.svg',
-                    ),
-                  ],
-                ),
-              ),
+              child: ListView.builder(
+                  itemCount: 5,
+                  itemExtent: 50,
+                  itemBuilder: (context, index) {
+                    return BuildSavedList();
+                  }),
             ),
-            /*  Padding(
-              padding: const EdgeInsets.fromLTRB(10, 100, 10, 0),
-              child: Divider(
-                height: 1,
-                thickness: 1,
-                color: primarycolor.withOpacity(0.5),
-              ),
-            ),*/
           ],
         ),
       ),
