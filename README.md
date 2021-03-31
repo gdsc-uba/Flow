@@ -48,3 +48,12 @@ Build the application following this [tutorial](https://flutter.dev/docs/deploym
 * Automatically request for access to device location.
 
 
+### Contributors
+
+* Ida Delphine
+
+* Alouzeh Brandone
+
+* uikweh Lewis
+
+* Chi Karl
