@@ -17,8 +17,34 @@ Let's consider two locations in Bambili A and B. As a result of the overpopulati
 
 
 ## Get the App!
-You can dowload the app at --- for Android and --- for iOS.
+You can get the .apk file [here](https://drive.google.com/file/d/19hP9BfqYNmUc7WzCTWoCzYJDq50yVt4s/view?usp=drivesdk).
+Install it manually and allow it to access your location.
 
 
-## Setup
+
+## How to Build
+
+Follow [this](https://flutter.dev/docs/get-started/install) tutorial on how to install and set up flutter for mobile development.
+Clone the repository:
+> git clone https://github.com/Developer-Student-Clubs-UBa/Flow.git
+
+### Requirements
+The following Flutter dependencies are required:
+*  flutter_svg: ^0.19.1
+*  google_maps_flutter: ^2.0.1
+*  location: ^4.1.1
+*  cloud_firestore: ^1.0.3
+*  firebase_core: ^1.0.2
+*  shared_preferences: ^2.0.5
+*  polylines
+
+Include the package name and version number in the pubspec.ymal file below the dependencies section.
+Build the application following this [tutorial](https://flutter.dev/docs/deployment/android).
+
+#### TODOs
+* Make the get directions feature fully functional.
+* Distance Calculation.
+* Shared preferences.
+* Automatically request for access to device location.
+
 
