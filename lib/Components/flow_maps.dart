@@ -92,7 +92,7 @@ class _FlowMapsState extends State<FlowMaps> {
             case ConnectionState.waiting:
               return Center(
                 child: CircularProgressIndicator(
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.transparent,
                 ),
               );
             case ConnectionState.none:
@@ -175,7 +175,6 @@ class _FlowMapsState extends State<FlowMaps> {
             ),
           ),
         ),
-        // Move camera to the specified latitude & longitude
       ],
     );
   }

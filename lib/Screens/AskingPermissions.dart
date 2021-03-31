@@ -1,7 +1,6 @@
 import 'package:flow/Components/flow_location.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 
 class FlowAskPermissions extends StatelessWidget {
   @override

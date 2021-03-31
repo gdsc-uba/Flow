@@ -61,9 +61,7 @@ class WaterSourcesListItem extends StatelessWidget {
               isflowingiconlink,
               color: primarycolor,
             ),
-            SizedBox(
-              width: 20,
-            ),
+
             IconButton(
                 padding: EdgeInsets.zero,
                 enableFeedback: true,
