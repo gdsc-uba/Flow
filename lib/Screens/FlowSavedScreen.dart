@@ -7,6 +7,8 @@ import 'package:flow/constants.dart';
 import 'package:flow/Components/flow_app_bar.dart';
 import 'package:flow/Components/search_bar.dart';
 import 'package:flow/Components/sources_list_item.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FlowSavedScreen extends StatefulWidget {
@@ -15,72 +17,161 @@ class FlowSavedScreen extends StatefulWidget {
 }
 
 class _FlowSavedScreenState extends State<FlowSavedScreen> {
+  // ignore: deprecated_member_use
+  List<FlowSaved> flowList = List<FlowSaved>();
+  String ifisflowingiconlink;
   @override
-  Widget BuildSavedList() {
+
+  ///instantialintg shared Prefs
+  SharedPreferences flowSharedPreferences;
+
+  @override
+  void initState() {
+    initFlowSharedPreferences();
+    super.initState();
+  }
+
+  ///initialising Shared Preferences
+  initFlowSharedPreferences() async {
+    flowSharedPreferences = await SharedPreferences.getInstance();
+    loadSPData();
+  }
+
+  Widget buildSavedList(BuildContext context, int index) {
+    // print('from saved screen: ${flowList[index].savedID}');
+
+    if (flowList[index].savedFlowing == true) {
+      ifisflowingiconlink = 'Assets/icons/svgs/fi-sr-flowing-filled.svg';
+    } else {
+      ifisflowingiconlink = 'Assets/icons/svgs/fi-rr-not-flowing.svg';
+    }
     return WaterSourcesListItem(
-      id: 'swr',
-      distance: 'N/A m',
-      isflowingiconlink: 'Assets/icons/svgs/fi-rr-directions.svg',
+      id: flowList[index].savedID,
+      distance: flowList[index].savedDistance.toString(),
+      isflowingiconlink: ifisflowingiconlink,
+      iconButtonWidget: IconButton(
+          padding: EdgeInsets.zero,
+          enableFeedback: true,
+          icon: SvgPicture.asset(
+            'Assets/icons/svgs/fi-rr-trash.svg',
+            color: secondarycolor,
+          ),
+          onPressed: () {
+            removeFromSavedList(
+              FlowSaved(
+                savedID: flowList[index].savedID,
+                savedDescription: flowList[index].savedDescription,
+                savedDistance: flowList[index].savedDistance,
+                savedFlowing: flowList[index].savedFlowing,
+                savedTypeTap: flowList[index].savedTypeTap,
+              ),
+              flowList[index].savedID,
+            );
+            setState(() {});
+          }),
     );
   }
 
-  // ///instantialintg shared Prefs
-  // SharedPreferences FlowSharedPreferences;
-  //
-  // @override
-  // void initState() {
-  //   initFlowSharedPreferences();
-  //   super.initState();
-  // }
-  //
-  // ///initialising Shared Preferences
-  // initFlowSharedPreferences() async {
-  //   FlowSharedPreferences = await SharedPreferences.getInstance();
-  // }
-  //
-  // ///method to get Shared Prefs data
-  //
-  // void retrievSPData(){
-  //   List<String> SPList = FlowSharedPreferences.getStringList('list');
-  //   SPList = SPList.map((item) => prefs.getStringList.(json.decode(item)))
-  //             .toList();
-  //
-  //
-  // }
-
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    // final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: FlowAppBar(),
-      body: SafeArea(
-        child: Stack(
+    if (flowList.isEmpty) {
+      return Scaffold(
+        backgroundColor: Colors.white,
+        appBar: FlowAppBar(),
+        body: Stack(
           children: [
-            // SearchBar(),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 0, 8.0),
-                child: BodyTextBold(
-                  title: 'Saved Water Sources',
-                  color: primarycolor,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * .25),
+                  child: Image.asset('Assets/images/placeholder_image.png'),
                 ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 50),
-              child: ListView.builder(
-                  itemCount: 5,
-                  itemExtent: 50,
-                  itemBuilder: (context, index) {
-                    return BuildSavedList();
-                  }),
+                SizedBox(height: 30),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * .15),
+                  child: Text(
+                    'You haven\'t saved any water sources yet',
+                    style: TextStyle(
+                        color: primarycolor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Once you save some, they\'ll appear here',
+                  style: TextStyle(
+                      color: textcolor.withOpacity(.6),
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: screenHeight * .15,
+                ),
+              ],
             ),
           ],
         ),
-      ),
-      // bottomNavigationBar: FlowBottomNavBar(),
-    );
+      );
+    } else {
+      return Scaffold(
+        appBar: FlowAppBar(),
+        body: SafeArea(
+          child: Stack(
+            children: [
+              // SearchBar(),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 0, 8.0),
+                  child: BodyTextBold(
+                    title: 'Saved Water Sources',
+                    color: primarycolor,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 50),
+                child: ListView.builder(
+                    itemCount: flowList.length,
+                    itemExtent: 50,
+                    itemBuilder: (BuildContext context, int index) {
+                      return buildSavedList(context, index);
+                    }),
+              ),
+            ],
+          ),
+        ),
+        // bottomNavigationBar: FlowBottomNavBar(),
+      );
+    }
+  }
+
+  ///Shared Preferences methods
+  void saveSPData() {
+    List<String> spList = flowList.map((savedItem) {
+      return json.encode(savedItem.toMap());
+    }).toList();
+    flowSharedPreferences.setStringList('list', spList);
+    setState(() {});
+  }
+
+  void loadSPData() {
+    List<String> spList = flowSharedPreferences.getStringList('list');
+    flowList = spList
+        .map((savedItem) => FlowSaved.fromMap(json.decode(savedItem)))
+        .toList();
+    setState(() {});
+  }
+
+  removeFromSavedList(FlowSaved savedItem, tapID) {
+    flowList.removeWhere((savedItem) => savedItem.savedID == tapID);
+    if (flowList.isEmpty) setState(() {});
+    saveSPData();
   }
 }
