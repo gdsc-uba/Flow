@@ -9,16 +9,16 @@ import 'dart:convert';
 class BottomSheetInfo extends StatefulWidget {
   final String bottomSheetID;
   final String bottomSheetDescription;
-  bool bottomSheetisTypeTap;
-  bool bottomSheetisFlowing;
-  String distance;
+  final bool bottomSheetIsTypeTap;
+  final bool bottomSheetIsFlowing;
+  final String distance;
 
   BottomSheetInfo({
     Key key,
     this.bottomSheetID,
     this.bottomSheetDescription,
-    this.bottomSheetisTypeTap,
-    this.bottomSheetisFlowing,
+    this.bottomSheetIsTypeTap,
+    this.bottomSheetIsFlowing,
     this.distance,
   }) : super(key: key);
 
@@ -27,13 +27,16 @@ class BottomSheetInfo extends StatefulWidget {
 }
 
 class _BottomSheetInfoState extends State<BottomSheetInfo> {
-  // ignore: deprecated_member_use
-  // List<int> flowSPList = List<int>();
-  // ignore: deprecated_member_use
-  List<flowSharedPrefs> flowSPList = List<flowSharedPrefs>();
+  String ifIsTypeTap;
+  String ifIsFlowing;
+  bool isSaved;
 
-  ///Instanciating shared Prefs
-  SharedPreferences FlowSharedPreferences;
+  // ignore: deprecated_member_use
+  List<FlowSaved> flowList = List<FlowSaved>();
+
+  ///Instantiating shared Prefs
+
+  SharedPreferences flowSharedPreferences;
 
   @override
   void initState() {
@@ -43,50 +46,22 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
 
   ///initialising Shared Preferences
   initFlowSharedPreferences() async {
-    FlowSharedPreferences = await SharedPreferences.getInstance();
+    flowSharedPreferences = await SharedPreferences.getInstance();
+    loadSPData();
   }
 
   @override
-  String ifIsTypeTap;
-  String ifIsFlowing;
-  bool isSaved;
-
-  @override
   Widget build(BuildContext context) {
-    if (widget.bottomSheetisTypeTap == true) {
+    if (widget.bottomSheetIsTypeTap == true) {
       ifIsTypeTap = 'Tap';
     } else {
       ifIsTypeTap = 'Stream';
     }
 
-    if (widget.bottomSheetisFlowing == true) {
+    if (widget.bottomSheetIsFlowing == true) {
       ifIsFlowing = 'Flowing';
     } else {
       ifIsFlowing = 'Not Flowing';
-    }
-
-    /// method to add to save and perform all SP Task
-    Future<void> flowAddToSaved() async {
-      if (isSaved) {
-        // List<String> SPList =
-        //     flowSPList.map((item) => json.encode(item.toString())).toList();
-        // flowSPList.setStringList(
-        //   'sourceID',
-        // );
-
-        List<String> SPList = FlowSharedPreferences.getStringList('list');
-        flowSPList =
-            SPList.map((item) => flowSharedPrefs.fromMap(json.decode(item)))
-                .toList();
-        FlowSharedPreferences.setString('sourceID', widget.bottomSheetID);
-        FlowSharedPreferences.setString(
-            'sourceDescription', widget.bottomSheetDescription);
-        FlowSharedPreferences.setString('sourceDistance', widget.distance);
-        FlowSharedPreferences.setString('sourceFlowing', ifIsFlowing);
-        FlowSharedPreferences.setString('sourceTypeTap', ifIsTypeTap);
-
-        print(SPList);
-      }
     }
 
     return Container(
@@ -181,45 +156,8 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
                 backgroundColor: primarycolor,
                 onPressed: () {},
               ),
-              SizedBox(
-                width: 30,
-              ),
-
-              // FloatingActionButton(
-              //   elevation: 3,
-              //   backgroundColor: primarycolor,
-              //   child: new IconButton(icon: Icon(
-              //     isSaved
-              //         ? Icons.favorite
-              //         : Icons.favorite_border,
-              //     size:20,
-              //     color: isSaved
-              //       ? Colors.white
-              //       : Colors.white
-              //   ),
-              FloatingActionButton(
-                elevation: 3,
-                backgroundColor: primarycolor,
-                child: SvgPicture.asset('Assets/icons/svgs/fi-rr-heart.svg',
-                    color: Colors.white),
-                //
-                // isSaved
-                //     ? SvgPicture.asset('Assets/icons/svgs/fi-sr-heart.svg',
-                //         color: Colors.white)
-                //     : SvgPicture.asset('Assets/icons/svgs/fi-rr-heart.svg',
-                //         color: Colors.white),
-                onPressed: () {
-                  isSaved = true;
-                  flowAddToSaved();
-                },
-              ),
-              // child: SvgPicture.asset(
-              //   'Assets/icons/sgs/fi-rr-heart.svg',
-              //   color: Colors.white,
-              //   height: 20,
-              // ),
-              //   onPressed: flowSaveData,
-              // ),
+              SizedBox(width: 40),
+              checkIfIsSavedFAB(),
             ],
           ),
 
@@ -229,51 +167,111 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
     );
   }
 
-  /* void addToSaved(
-    flowSharedPrefs item,
-    String ID ,
-    String Description,
-    String Distance,
-    bool Flowing,
-    bool TypeTap,
-  ) {
-    item.sourceID = ID;
-    item.sourceDescription = Description;
-    item.sourceDistance = Distance;
-    item.sourceFlowing = Flowing;
-    item.sourceTypeTap = TypeTap;
-    flowSaveData();
-  }*/
+  /// method to check if is saved and return appropriate icon
 
-  ///method to save Shared Prefs data
-  // void flowSaveData() {
-  //   List<String> SPList =
-  //       flowSPList.map((item) => json.encode(item.toInt())).toList();
-  //   FlowSharedPreferences.setStringList('list', SPList);
-  //
-  //   print(SPList);
-  //   setState(() {});
-  // }
+  Widget checkIfIsSavedFAB() {
+    Widget checkIfSaved;
 
-  // void flowSaveData() {
-  //   if (isSaved) {
-  //     List<String> SPList =
-  //         flowSPList.map((item) => json.encode(item.toInt())).toList();
-  //     // flowSPList.setStringList(
-  //     //   'sourceID',
-  //     // );
-  //     prefs.setStringList('sourceID', bottomSheetID);
-  //     prefs.setStringList('sourceDescription', SPList);
-  //     prefs.setStringList('sourceDistance', SPList);
-  //     prefs.setStringList('sourceFlowing', SPList);
-  //     prefs.setStringList('sourceTypeTap', SPList);
-  //   }
-  // }
+    ///loop to go through the entire list and check if this source has been saved or not
+    if (flowList.isEmpty) {
+      checkIfSaved = FABToAddTosave();
+    } else {
+      for (int i = 0; i < flowList.length; i++) {
+        if (flowList[i].savedID == widget.bottomSheetID) {
+          checkIfSaved = FABToRemoveFromSaved();
+        } else {
+          checkIfSaved = FABToAddTosave();
+        }
+      }
+    }
+    return checkIfSaved;
+  }
 
-  // void flowGetData() {
-  //   List<String> SPList = FlowSharedPreferences.getStringList('list');
-  //   flowSPList =
-  //       SPList.map((item) => flowSharedPrefs.fromMap(json.decode(item)))
-  //           .toList();
-  // }
+  /// custom FABs to add and remove from saved
+  // ignore: non_constant_identifier_names
+  Widget FABToAddTosave() {
+    return FloatingActionButton(
+      elevation: 3,
+      backgroundColor: primarycolor,
+      child: SvgPicture.asset('Assets/icons/svgs/fi-rr-heart.svg',
+          color: Colors.white),
+      onPressed: () {
+        setState(() {
+          // isSaved = true;
+          addToSavedList(FlowSaved(
+            savedID: widget.bottomSheetID,
+            savedDescription: widget.bottomSheetDescription,
+            savedDistance: widget.distance.toString(),
+            savedFlowing: widget.bottomSheetIsFlowing,
+            savedTypeTap: ifIsTypeTap,
+            // savedisSaved: isSaved,
+          ));
+
+          print('is saved?: $isSaved');
+          print('bottomsheet id: ${widget.bottomSheetID}');
+        });
+      },
+    );
+  }
+
+  // ignore: non_constant_identifier_names
+  Widget FABToRemoveFromSaved() {
+    return FloatingActionButton(
+      elevation: 3,
+      backgroundColor: secondarycolor,
+      child: SvgPicture.asset('Assets/icons/svgs/fi-sr-heart.svg',
+          color: Colors.white),
+      onPressed: () {
+        setState(() {
+          //  isSaved = false;
+          removeFromSavedList(
+            FlowSaved(
+              savedID: widget.bottomSheetID,
+              savedDescription: widget.bottomSheetDescription,
+              savedDistance: widget.distance.toString(),
+              savedFlowing: widget.bottomSheetIsFlowing,
+              savedTypeTap: ifIsTypeTap,
+              // savedisSaved: isSaved,
+            ),
+            widget.bottomSheetID,
+          );
+
+          print('is saved from bottom sheet page?: $isSaved');
+          print('bottomsheet id: ${widget.bottomSheetID}');
+        });
+      },
+    );
+  }
+
+  ///methods to add, remove, store and load data into a json list
+  void addToSavedList(FlowSaved savedItem) {
+    flowList.add(savedItem);
+    setState(() {});
+    saveSPData();
+  }
+
+  void removeFromSavedList(FlowSaved savedItem, tapID) {
+    flowList.removeWhere((savedItem) => savedItem.savedID == tapID);
+    if (flowList.isEmpty) setState(() {});
+    saveSPData();
+  }
+
+  void saveSPData() {
+    List<String> spList = flowList.map((savedItem) {
+      return json.encode(savedItem.toMap());
+    }).toList();
+    flowSharedPreferences.setStringList('list', spList);
+    setState(() {});
+    // await FlowSharedPreferences.setString(SavedID, widget.bottomSheetID);
+
+    print(spList);
+  }
+
+  void loadSPData() {
+    List<String> spList = flowSharedPreferences.getStringList('list');
+    flowList = spList
+        .map((savedItem) => FlowSaved.fromMap(json.decode(savedItem)))
+        .toList();
+    setState(() {});
+  }
 }
