@@ -111,19 +111,21 @@ class _FlowMapsState extends State<FlowMaps> {
                     ),
 
                     onTap: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return BottomSheetInfo(
-                              bottomSheetID: snapshot.data.docs[i]['ID'],
-                              bottomSheetDescription: snapshot.data.docs[i]
-                                  ['description'],
-                              bottomSheetisTypeTap: snapshot.data.docs[i]
-                                  ['isTypeTap'],
-                              bottomSheetisFlowing: snapshot.data.docs[i]
-                                  ['isFlowing'],
-                            );
-                          });
+                      setState(() {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BottomSheetInfo(
+                                bottomSheetID: snapshot.data.docs[i]['ID'],
+                                bottomSheetDescription: snapshot.data.docs[i]
+                                    ['description'],
+                                bottomSheetIsTypeTap: snapshot.data.docs[i]
+                                    ['isTypeTap'],
+                                bottomSheetIsFlowing: snapshot.data.docs[i]
+                                    ['isFlowing'],
+                              );
+                            });
+                      });
                     }, //load bottom sheet
                   ),
                 );
