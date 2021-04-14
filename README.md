@@ -16,8 +16,8 @@ Let's consider two locations in Bambili A and B. As a result of the overpopulati
 
 
 ## Get the App!
-You can get the .apk file [here](https://drive.google.com/file/d/19hP9BfqYNmUc7WzCTWoCzYJDq50yVt4s/view?usp=drivesdk).
-Install it manually and allow it to access your location.
+You can get the .apk file [here](https://drive.google.com/file/d/1IOJSzM4sbsL-S9HZfYWqo0gfugHiwLAM/view?usp=sharing).
+Download and extract the zip file to get the apk.
 
 ## Usage
 * Manually enable app to access location.
