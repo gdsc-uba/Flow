@@ -1,7 +1,7 @@
 # Flow - Just go with the flow!
 Flow is a water source location mobile app that helps students of the University of Bamenda, Cameroon to find/locate clean water sources.
 
-![Flow collage](../Assets/flow_mockups/Collage_mockup.png "Flow mockup"){: .center-image }
+<img src="https://github.com/Idadelveloper/Flow/blob/main/Assets/flow_mockups/Collage_mockup.jpg" />
 
 
 ## Introduction
