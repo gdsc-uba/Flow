@@ -1,7 +1,6 @@
 # Flow - Just go with the flow!
 Flow is a water source location mobile app that helps students of the University of Bamenda, Cameroon to find/locate clean water sources.
 
-
 ## Introduction
 Flow came about as a result of the persistent water crises in Bambili, Cameroon. This is the location of the University of Bamenda in the North West Region of Cameroon. Due to the high influx of people(students) into this locality, water shortages have been the order of the day. The water is being rationed to ensure everybody gets water (unfortunately not everyone gets water as there are times some areas go weeks without water).
 
@@ -20,7 +19,10 @@ Let's consider two locations in Bambili A and B. As a result of the overpopulati
 You can get the .apk file [here](https://drive.google.com/file/d/19hP9BfqYNmUc7WzCTWoCzYJDq50yVt4s/view?usp=drivesdk).
 Install it manually and allow it to access your location.
 
-
+## Usage
+* Manually enable app to access location.
+* Open the app.
+* Explore!
 
 ## How to Build
 
@@ -36,7 +38,7 @@ The following Flutter dependencies are required:
 *  cloud_firestore: ^1.0.3
 *  firebase_core: ^1.0.2
 *  shared_preferences: ^2.0.5
-*  polylines
+*  flutter_polyline_points: ^0.2.6
 
 Include the package name and version number in the pubspec.ymal file below the dependencies section.
 Build the application following this [tutorial](https://flutter.dev/docs/deployment/android).
@@ -44,7 +46,6 @@ Build the application following this [tutorial](https://flutter.dev/docs/deploym
 #### TODOs
 * Make the get directions feature fully functional.
 * Distance Calculation.
-* Shared preferences.
 * Automatically request for access to device location.
 
 
