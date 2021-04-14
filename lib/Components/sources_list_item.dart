@@ -7,12 +7,14 @@ class WaterSourcesListItem extends StatelessWidget {
   final String id;
   final String distance;
   final String isflowingiconlink;
+  final Widget iconButtonWidget;
 
   const WaterSourcesListItem({
     Key key,
     this.id,
     this.distance,
     this.isflowingiconlink,
+    this.iconButtonWidget,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
@@ -61,15 +63,7 @@ class WaterSourcesListItem extends StatelessWidget {
               isflowingiconlink,
               color: primarycolor,
             ),
-
-            IconButton(
-                padding: EdgeInsets.zero,
-                enableFeedback: true,
-                icon: SvgPicture.asset(
-                  'Assets/icons/svgs/fi-rr-heart.svg',
-                  color: primarycolor,
-                ),
-                onPressed: null) //onpressed invoke save action
+            iconButtonWidget,
           ],
         ),
       ),

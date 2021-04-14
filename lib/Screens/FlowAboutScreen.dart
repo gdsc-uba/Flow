@@ -63,12 +63,19 @@ class FlowAboutScreen extends StatelessWidget {
                       color: primarycolor,
                     ),
                     SizedBox(
+                      height: 5,
+                    ),
+                    BodyText(
+                      title: 'Chi Karl',
+                      color: primarycolor,
+                    ),
+                    SizedBox(
                       height: 15,
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        'This is a project by Google Developer Student Clubs- University of Bamenda',
+                        'This is a project by the Google Developer Student Clubs of the University of Bamenda',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 12,

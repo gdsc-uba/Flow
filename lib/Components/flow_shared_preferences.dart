@@ -1,50 +1,39 @@
-import 'package:shared_preferences/shared_preferences.dart';
+class FlowSaved {
+  String savedID;
+  String savedDescription;
+  String savedDistance;
+  bool savedFlowing;
+  String savedTypeTap;
+  //bool savedisSaved;
 
-// SharedPreferences prefs;
-// Future<bool> sourceID(List<String> sourceID) async {
-//   prefs = await SharedPreferences.getInstance();
-//   prefs.setStringList(
-//     'sourceID',
-//   );
-// }
-initialiseSP() async {
-  SharedPreferences FlowSharedPreferences =
-      await SharedPreferences.getInstance();
-}
-
-class flowSharedPrefs {
-  String sourceID;
-  String sourceDescription;
-  double sourceDistance;
-  bool sourceTypeTap;
-  bool sourceFlowing;
-
-  flowSharedPrefs({
-    this.sourceDescription,
-    this.sourceDistance,
-    this.sourceFlowing,
-    this.sourceID,
-    this.sourceTypeTap,
+  FlowSaved({
+    this.savedID,
+    this.savedDescription,
+    this.savedDistance,
+    this.savedFlowing,
+    this.savedTypeTap,
+    // this.savedisSaved,
   });
 
-  ///convert from map/List to flowSharedPrefs obj
-  flowSharedPrefs.fromMap(Map<String, dynamic> map) {
-    this.sourceID = map['sourceID'];
-    this.sourceDescription = map['sourceDescription'];
-    this.sourceDistance = map['sourceDistance'];
-    this.sourceFlowing = map['sourceFlowing'];
-    this.sourceTypeTap = map['sourceTypeTap'];
-  }
+  ///convert from map to flowSaved object
+  FlowSaved.fromMap(Map map)
+      : this.savedID = map[
+            'ID'], // assigning ths SavedID from the constructor to the 'ID' property/Variable of our map
+        this.savedDescription = map['Description'],
+        this.savedDistance = map['Distance'],
+        this.savedFlowing = map['Flowing'],
+        this.savedTypeTap = map['TypeTap'];
+  //  this.savedisSaved = map['isSaved'];
 
-  ///convert from flowSharedPrefs obj to map/List
-  Future<Map> toMap() async {
+  ///convert from flowSaved Object to a map
+  Map toMap() {
     return {
-      'sourceID': this.sourceID,
-      'sourceDescription': this.sourceDescription,
-      'sourceDistance': this.sourceDistance,
-      'sourceFlowing': this.sourceFlowing,
-      'sourceTypeTap': this.sourceTypeTap,
+      'ID': this.savedID,
+      'Description': this.savedDescription,
+      'Distance': this.savedDistance,
+      'Flowing': this.savedFlowing,
+      'TypeTap': this.savedTypeTap,
+      // 'isSaved': this.savedisSaved,
     };
-    // }
   }
 }

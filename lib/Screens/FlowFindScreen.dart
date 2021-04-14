@@ -1,34 +1,60 @@
+import 'package:flow/Components/bottom_sheet_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/Components/flow_app_bar.dart';
 import 'package:flow/Components/search_bar.dart';
 import 'package:flow/constants.dart';
 import 'package:flow/Components/sources_list_item.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FlowFindScreen extends StatelessWidget {
+class FlowFindScreen extends StatefulWidget {
+  @override
+  _FlowFindScreenState createState() => _FlowFindScreenState();
+}
+
+class _FlowFindScreenState extends State<FlowFindScreen> {
   /// creating a firestore Instance,
-  // final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   final Stream<QuerySnapshot> flowFirestoreStream =
       FirebaseFirestore.instance.collection('flow_water_sources').snapshots();
-
   String ifisflowingiconlink;
 
-  ///method to build a list for every doucment index in snapshot
-  Widget BuildWaterSourcesList(
+  ///method to build a list for every document index in snapshot
+  Widget buildWaterSourcesList(
       BuildContext context, DocumentSnapshot document) {
-    // this if statement does not work well
     if (document['isFlowing'] == true) {
-      ifisflowingiconlink = 'Assets/icons/svgs/fi-rr-flowing.svg';
+      ifisflowingiconlink = 'Assets/icons/svgs/fi-sr-flowing-filled.svg';
     } else // add icon for when the tap is flowing
     {
       ifisflowingiconlink = 'Assets/icons/svgs/fi-rr-not-flowing.svg';
     }
+
     return WaterSourcesListItem(
       id: document['ID'],
       isflowingiconlink: ifisflowingiconlink,
       distance: 'N/A m',
+      iconButtonWidget: IconButton(
+          padding: EdgeInsets.zero,
+          enableFeedback: true,
+          icon: SvgPicture.asset(
+            'Assets/icons/svgs/fi-rr-angle-small-down.svg',
+            color: primarycolor,
+          ),
+          onPressed: () {
+            setState(() {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BottomSheetInfo(
+                      bottomSheetID: document['ID'],
+                      bottomSheetDescription: document['description'],
+                      bottomSheetIsTypeTap: document['isTypeTap'],
+                      bottomSheetIsFlowing: document['isFlowing'],
+                    );
+                  });
+            });
+          }),
     );
   }
 
@@ -45,7 +71,7 @@ class FlowFindScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 20),
               child: StreamBuilder(
                 stream: flowFirestoreStream,
-                builder: (BuildContextcontext,
+                builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
@@ -55,7 +81,7 @@ class FlowFindScreen extends StatelessWidget {
                     case ConnectionState.waiting:
                       return Center(
                         child: CircularProgressIndicator(
-                          backgroundColor: Colors.white,
+                          backgroundColor: Colors.transparent,
                         ),
                       );
                     case ConnectionState.none:
@@ -68,7 +94,7 @@ class FlowFindScreen extends StatelessWidget {
                       return ListView.builder(
                         itemExtent: 50,
                         itemCount: snapshot.data.docs.length,
-                        itemBuilder: (context, index) => BuildWaterSourcesList(
+                        itemBuilder: (context, index) => buildWaterSourcesList(
                             context, snapshot.data.docs[index]),
                       );
                   }
