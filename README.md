@@ -19,9 +19,8 @@ Let's consider two locations in Bambili A and B. As a result of the overpopulati
 
 
 ## Get the App!
-You can get the .apk file [here](https://drive.google.com/file/d/1IOJSzM4sbsL-S9HZfYWqo0gfugHiwLAM/view?usp=sharing).
-Download and extract the zip file to get the apk.
-
+You can get the .apk file [here](https://drive.google.com/file/d/124QTZ1PaLzvxsotc0n0AT40n7tSDHX2h/view?usp=sharing).
+Download and install the app.
 ## Usage
 * Manually enable app to access location.
 * Open the app.
@@ -30,7 +29,7 @@ Download and extract the zip file to get the apk.
 ## How to Build
 Follow [this](https://flutter.dev/docs/get-started/install) tutorial on how to install and set up flutter for mobile development.
 Clone the repository:
-> git clone https://github.com/Developer-Student-Clubs-UBa/Flow.git
+``` git clone https://github.com/Developer-Student-Clubs-UBa/Flow.git ```
 
 ### Requirements
 The following Flutter dependencies are required:
@@ -43,6 +42,20 @@ The following Flutter dependencies are required:
 *  flutter_polyline_points: ^0.2.6
 
 Include the package name and version number in the pubspec.ymal file below the dependencies section.
+
+#### Steps to run
+* Open the project on Android Studio.
+* Get your Google Maps API key. For Android, follow instructions [here](https://developers.google.com/maps/documentation/android-sdk/get-api-key)
+* Add the API key to your Flutter app in the application manifest (android/app/src/main/AndroidManifest.xml), as follows:
+```
+<manifest ...
+  <application ...
+    <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="YOUR ANDROID API KEY HERE"/>
+```
+* Run the code on Android studio and view the app on your emulator of choice or mobile device. You can also run the app from the terminal using:
+``` flutter run ```
+
 Build the application following this [tutorial](https://flutter.dev/docs/deployment/android).
 
 #### TODOs
