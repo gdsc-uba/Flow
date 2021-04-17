@@ -151,7 +151,7 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
                   color: Colors.white,
                   height: 20,
                 ),
-                elevation: 3,
+                elevation: 0,
                 label: Text('Get Directions'),
                 backgroundColor: primarycolor,
                 onPressed: () {},
@@ -191,10 +191,10 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
   // ignore: non_constant_identifier_names
   Widget FABToAddTosave() {
     return FloatingActionButton(
-      elevation: 3,
-      backgroundColor: primarycolor,
+      elevation: 0,
+      backgroundColor: primarycolor.withOpacity(.2),
       child: SvgPicture.asset('Assets/icons/svgs/fi-rr-heart.svg',
-          color: Colors.white),
+          color: primarycolor),
       onPressed: () {
         setState(() {
           // isSaved = true;
@@ -208,7 +208,7 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
           ));
 
           print('is saved?: $isSaved');
-          print('bottomsheet id: ${widget.bottomSheetID}');
+          print('bottom sheet id: ${widget.bottomSheetID}');
         });
       },
     );
@@ -217,10 +217,10 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
   // ignore: non_constant_identifier_names
   Widget FABToRemoveFromSaved() {
     return FloatingActionButton(
-      elevation: 3,
-      backgroundColor: secondarycolor,
+      elevation: 0,
+      backgroundColor: secondarycolor.withOpacity(.2),
       child: SvgPicture.asset('Assets/icons/svgs/fi-sr-heart.svg',
-          color: Colors.white),
+          color: secondarycolor),
       onPressed: () {
         setState(() {
           //  isSaved = false;
@@ -237,7 +237,7 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
           );
 
           print('is saved from bottom sheet page?: $isSaved');
-          print('bottomsheet id: ${widget.bottomSheetID}');
+          print('bottom sheet id: ${widget.bottomSheetID}');
         });
       },
     );

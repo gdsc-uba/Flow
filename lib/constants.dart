@@ -6,7 +6,7 @@ const primarycolor = Color(0xFF12A4EF);
 const textcolor = Color(0xFF444444);
 const orangecolor = Color(0xFFFFA070);
 //const darkbluecolor = Color(0xFF694DE8);
-//const secondarycolor = Color(0xFF694DE8);
+const purplecolor = Color(0xFF7960E2);
 const secondarycolor = Color(0xFFF86272);
 
 double screenHeight = MediaQueryData().size.height;
