@@ -34,6 +34,7 @@ dependencies:
   cloud_firestore: ^1.0.3
   firebase_core: ^1.0.2
   shared_preferences: ^2.0.5
+  change_app_package_name: ^1.0.0
 
 
 
