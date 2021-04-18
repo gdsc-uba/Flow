@@ -41,7 +41,7 @@ The following Flutter dependencies are required:
 *  shared_preferences: ^2.0.5
 *  flutter_polyline_points: ^0.2.6
 
-Include the package name and version number in the pubspec.ymal file below the dependencies section.
+Include the package name and version number in the pubspec.yaml file below the dependencies section.
 
 #### Steps to run
 * Open the project on Android Studio.
