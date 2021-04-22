@@ -5,7 +5,14 @@
 
      <item>
         <bitmap
+            android:antialias="true"
             android:gravity="center"
-            android:src="@mipmap/flow_logo" />
+            android:src="@drawable/flow_logo" />
+    </item>
+    <item>
+        <bitmap
+            android:antialias="true"
+            android:gravity="bottom"
+            android:src="@drawable/flow_splash" />
     </item>
 </layer-list>
