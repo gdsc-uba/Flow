@@ -19,7 +19,7 @@ Let's consider two locations in Bambili A and B. As a result of the overpopulati
 
 
 ## Get the App!
-You can get the .apk file [here](https://drive.google.com/file/d/124QTZ1PaLzvxsotc0n0AT40n7tSDHX2h/view?usp=sharing).
+You can get the .apk file [here](https://drive.google.com/file/d/1yBzKgXHNx8vX8BhOkDXbrTYUE5U0tTOj/view?usp=sharing).
 Download and install the app.
 ## Usage
 * Open the app.
@@ -60,6 +60,5 @@ Build the application following this [tutorial](https://flutter.dev/docs/deploym
 #### TODOs
 * Make the get directions feature fully functional.
 * Distance Calculation.
-* Automatically request for access to device location.
 
 
