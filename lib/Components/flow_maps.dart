@@ -24,11 +24,26 @@ class _FlowMapsState extends State<FlowMaps> {
   MapType _currentMapType = MapType.normal;
   GoogleMapController mapController;
 
+  BitmapDescriptor mapMarker;
+
   final Stream<QuerySnapshot> flowFirestoreStream =
       FirebaseFirestore.instance.collection('flow_water_sources').snapshots();
 
   Set<Marker> setMarkers() {
     return flowMarkers;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setCustomMarker();
+  }
+
+  ///Setting cutom marker icons
+  void setCustomMarker() async {
+    mapMarker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'Assets/images/marker-icon-red.png');
   }
 
   _onCameraMove(CameraPosition position) {
@@ -103,6 +118,7 @@ class _FlowMapsState extends State<FlowMaps> {
                   new Marker(
                     flat: false,
                     draggable: false,
+                    icon: mapMarker,
                     markerId: MarkerId(snapshot.data.docs[i]['ID']),
                     position: LatLng(snapshot.data.docs[i]['location'].latitude,
                         snapshot.data.docs[i]['location'].longitude),
