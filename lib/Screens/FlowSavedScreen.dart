@@ -59,7 +59,7 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
           enableFeedback: true,
           icon: SvgPicture.asset(
             'Assets/icons/svgs/fi-rr-angle-small-down.svg',
-            color: secondarycolor,
+            color: primarycolor,
           ),
           onPressed: () {
             setState(() {

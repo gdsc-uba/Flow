@@ -30,9 +30,7 @@ class WaterSourcesListItem extends StatelessWidget {
         /*border: Border.all(color: primarycolor.withOpacity(.5), width: 1),*/
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 10,
-        ),
+        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,6 +47,7 @@ class WaterSourcesListItem extends StatelessWidget {
                 ),
               ],
             ),
+            Spacer(),
             Row(
               children: [
                 BodyTextBold(
@@ -61,10 +60,12 @@ class WaterSourcesListItem extends StatelessWidget {
                 ),
               ],
             ),
+            Spacer(),
             SvgPicture.asset(
               isflowingiconlink,
               color: primarycolor,
             ),
+            Spacer(),
             moreInfoIcon,
             iconButtonWidget,
           ],

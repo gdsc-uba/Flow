@@ -55,6 +55,9 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
                   });
             });
           }),
+      iconButtonWidget: SizedBox(
+        width: 1,
+      ),
     );
   }
 
