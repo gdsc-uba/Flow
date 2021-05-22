@@ -8,6 +8,7 @@ class WaterSourcesListItem extends StatelessWidget {
   final String distance;
   final String isflowingiconlink;
   final Widget iconButtonWidget;
+  final Widget moreInfoIcon;
 
   const WaterSourcesListItem({
     Key key,
@@ -15,6 +16,7 @@ class WaterSourcesListItem extends StatelessWidget {
     this.distance,
     this.isflowingiconlink,
     this.iconButtonWidget,
+    this.moreInfoIcon,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class WaterSourcesListItem extends StatelessWidget {
               isflowingiconlink,
               color: primarycolor,
             ),
+            moreInfoIcon,
             iconButtonWidget,
           ],
         ),

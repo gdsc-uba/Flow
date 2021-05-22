@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flow/Components/bottom_sheet_info.dart';
 import 'package:flow/Components/flow_shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +19,10 @@ class FlowSavedScreen extends StatefulWidget {
 class _FlowSavedScreenState extends State<FlowSavedScreen> {
   // ignore: deprecated_member_use
   List<FlowSaved> flowList = List<FlowSaved>();
-  String ifisflowingiconlink;
-  @override
+  String ifIsFlowingIconLink;
+  bool typeTap;
 
-  ///instantialintg shared Prefs
+  ///instantiating shared Prefs
   SharedPreferences flowSharedPreferences;
 
   @override
@@ -37,18 +37,44 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
     loadSPData();
   }
 
-  Widget buildSavedList(BuildContext context, int index) {
+  Widget buildSavedList(BuildContext context, int index, FlowSaved savedItem) {
     // print('from saved screen: ${flowList[index].savedID}');
 
     if (flowList[index].savedFlowing == true) {
-      ifisflowingiconlink = 'Assets/icons/svgs/fi-sr-flowing-filled.svg';
+      ifIsFlowingIconLink = 'Assets/icons/svgs/fi-sr-flowing-filled.svg';
     } else {
-      ifisflowingiconlink = 'Assets/icons/svgs/fi-rr-not-flowing.svg';
+      ifIsFlowingIconLink = 'Assets/icons/svgs/fi-rr-not-flowing.svg';
+    }
+    if (flowList[index].savedTypeTap == 'Tap') {
+      typeTap = true;
+    } else {
+      typeTap = false;
     }
     return WaterSourcesListItem(
       id: flowList[index].savedID,
       distance: flowList[index].savedDistance.toString(),
-      isflowingiconlink: ifisflowingiconlink,
+      isflowingiconlink: ifIsFlowingIconLink,
+      moreInfoIcon: IconButton(
+          padding: EdgeInsets.zero,
+          enableFeedback: true,
+          icon: SvgPicture.asset(
+            'Assets/icons/svgs/fi-rr-angle-small-down.svg',
+            color: secondarycolor,
+          ),
+          onPressed: () {
+            setState(() {
+              showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BottomSheetInfo(
+                      bottomSheetID: flowList[index].savedID,
+                      bottomSheetDescription: flowList[index].savedDescription,
+                      bottomSheetIsTypeTap: typeTap,
+                      bottomSheetIsFlowing: flowList[index].savedFlowing,
+                    );
+                  });
+            });
+          }),
       iconButtonWidget: IconButton(
           padding: EdgeInsets.zero,
           enableFeedback: true,
@@ -141,7 +167,7 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
                     itemCount: flowList.length,
                     itemExtent: 50,
                     itemBuilder: (BuildContext context, int index) {
-                      return buildSavedList(context, index);
+                      return buildSavedList(context, index, flowList[index]);
                     }),
               ),
             ],

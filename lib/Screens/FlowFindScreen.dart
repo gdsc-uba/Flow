@@ -34,7 +34,7 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
       id: document['ID'],
       isflowingiconlink: ifisflowingiconlink,
       distance: 'N/A m',
-      iconButtonWidget: IconButton(
+      moreInfoIcon: IconButton(
           padding: EdgeInsets.zero,
           enableFeedback: true,
           icon: SvgPicture.asset(
