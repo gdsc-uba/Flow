@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         canvasColor: Colors.transparent,
       ),
       home: FlowBottomNavBar(),
+      //  home:MyLocation(),
     );
   }
 }
