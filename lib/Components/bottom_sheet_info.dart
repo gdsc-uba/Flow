@@ -1,10 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flow/Components/flow_shared_preferences.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:location/location.dart';
+import 'directions/directions_model.dart';
+import 'directions/directions_repository.dart';
+import 'flow_maps.dart';
+import 'flow_location.dart';
 
 class BottomSheetInfo extends StatefulWidget {
   final String bottomSheetID;
@@ -12,6 +19,7 @@ class BottomSheetInfo extends StatefulWidget {
   final bool bottomSheetIsTypeTap;
   final bool bottomSheetIsFlowing;
   final String distance;
+  final GeoPoint tapLocation;
 
   BottomSheetInfo({
     Key key,
@@ -20,16 +28,24 @@ class BottomSheetInfo extends StatefulWidget {
     this.bottomSheetIsTypeTap,
     this.bottomSheetIsFlowing,
     this.distance,
+    this.tapLocation,
   }) : super(key: key);
 
   @override
-  _BottomSheetInfoState createState() => _BottomSheetInfoState();
+  BottomSheetInfoState createState() => BottomSheetInfoState();
 }
 
-class _BottomSheetInfoState extends State<BottomSheetInfo> {
+class BottomSheetInfoState extends State<BottomSheetInfo> {
   String ifIsTypeTap;
   String ifIsFlowing;
   bool isSaved;
+  //Directions _info;
+  LatLng markerLocation;
+  LatLng currentLocation;
+  Directions dirInfo;
+  Widget circIndicator = SizedBox(
+    width: 2,
+  );
 
   // ignore: deprecated_member_use
   List<FlowSaved> flowList = List<FlowSaved>();
@@ -40,14 +56,25 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
 
   @override
   void initState() {
-    initFlowSharedPreferences();
     super.initState();
+    initFlowSharedPreferences();
+    getCurrentLocation();
+    //  ifTapIsSaved();
   }
 
   ///initialising Shared Preferences
   initFlowSharedPreferences() async {
     flowSharedPreferences = await SharedPreferences.getInstance();
     loadSPData();
+  }
+
+  getCurrentLocation() async {
+    final LocationData currentLocData = await getLocation();
+    currentLocation = LatLng(currentLocData.latitude, currentLocData.longitude);
+
+    print('current location data is $currentLocation');
+
+    return currentLocation;
   }
 
   @override
@@ -63,6 +90,11 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
     } else {
       ifIsFlowing = 'Not Flowing';
     }
+
+    markerLocation = LatLng(
+      widget.tapLocation.latitude.toDouble(),
+      widget.tapLocation.longitude.toDouble(),
+    );
 
     return Container(
       padding: EdgeInsets.all(20),
@@ -130,7 +162,7 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
                   children: [
                     BodyText(title: 'Approx. Distance:'),
                     Text(
-                      'N/A m',
+                      ' km',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: primarycolor,
@@ -154,10 +186,39 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
                 elevation: 0,
                 label: Text('Get Directions'),
                 backgroundColor: primarycolor,
-                onPressed: () {},
+                onPressed: () async {
+                  dirInfo = await FlowMaps()
+                      .getDirections(currentLocation, markerLocation);
+                  print(
+                      'marker position is ${widget.tapLocation.latitude.toDouble()} and ${widget.tapLocation.longitude.toDouble()} ');
+                  print(currentLocation);
+                  print(dirInfo.polylinePoints);
+                  setState(() {
+                    circIndicator = CircularProgressIndicator(
+                      backgroundColor: Colors.transparent,
+                    );
+                  });
+
+                  // Future.delayed(Duration(seconds: 1), () {
+                  //   Navigator.pop(context);
+                  //   setState(() {});
+                  //
+                  //   // Navigator.push(
+                  //   //   context,
+                  //   //   MaterialPageRoute(
+                  //   //     builder: (context) => FlowMaps(
+                  //   //       directionInfo: dirInfo,
+                  //   //     ),
+                  // });
+                  Future.delayed(Duration(seconds: 1), () async {
+                    Navigator.pop(context, dirInfo);
+                  });
+                },
               ),
-              SizedBox(width: 40),
-              checkIfIsSavedFAB(),
+              SizedBox(width: 10),
+              circIndicator,
+              SizedBox(width: 20),
+              ifTapIsSaved(),
             ],
           ),
 
@@ -167,20 +228,32 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
     );
   }
 
+  // ///Get Directions func
+  // Future<Directions> getDirections(LatLng origin, LatLng destination) async {
+  //   final directions = await DirectionsRepository()
+  //       .getDirections(origin: origin, destination: destination);
+  //
+  //   //  print(directionInfo);
+  //   // print(directions);
+  //   // setState(() {});
+  //   //return directionInfo;
+  //   return directions;
+  // }
+
   /// method to check if is saved and return appropriate icon
 
-  Widget checkIfIsSavedFAB() {
+  ifTapIsSaved() {
     Widget checkIfSaved;
 
     ///loop to go through the entire list and check if this source has been saved or not
     if (flowList.isEmpty) {
-      checkIfSaved = FABToAddTosave();
+      checkIfSaved = addToSavedFAB();
     } else {
       for (int i = 0; i < flowList.length; i++) {
         if (flowList[i].savedID == widget.bottomSheetID) {
-          checkIfSaved = FABToRemoveFromSaved();
+          checkIfSaved = removeFromSavedFAB();
         } else {
-          checkIfSaved = FABToAddTosave();
+          checkIfSaved = addToSavedFAB();
         }
       }
     }
@@ -189,7 +262,7 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
 
   /// custom FABs to add and remove from saved
   // ignore: non_constant_identifier_names
-  Widget FABToAddTosave() {
+  Widget addToSavedFAB() {
     return FloatingActionButton(
       elevation: 0,
       backgroundColor: primarycolor.withOpacity(.2),
@@ -215,7 +288,7 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
   }
 
   // ignore: non_constant_identifier_names
-  Widget FABToRemoveFromSaved() {
+  Widget removeFromSavedFAB() {
     return FloatingActionButton(
       elevation: 0,
       backgroundColor: secondarycolor.withOpacity(.2),
@@ -268,10 +341,9 @@ class _BottomSheetInfoState extends State<BottomSheetInfo> {
   }
 
   void loadSPData() {
-    List<String> spList = flowSharedPreferences.getStringList('list');
+    List<String> spList = (flowSharedPreferences.getStringList('list'));
     flowList = spList
         .map((savedItem) => FlowSaved.fromMap(json.decode(savedItem)))
         .toList();
-    setState(() {});
   }
 }
