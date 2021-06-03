@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class FlowSaved {
   String savedID;
   String savedDescription;
   String savedDistance;
   bool savedFlowing;
   String savedTypeTap;
+  GeoPoint savedTapLocation;
   //bool savedisSaved;
 
   FlowSaved({
@@ -12,6 +16,7 @@ class FlowSaved {
     this.savedDistance,
     this.savedFlowing,
     this.savedTypeTap,
+    this.savedTapLocation,
     // this.savedisSaved,
   });
 
@@ -22,7 +27,8 @@ class FlowSaved {
         this.savedDescription = map['Description'],
         this.savedDistance = map['Distance'],
         this.savedFlowing = map['Flowing'],
-        this.savedTypeTap = map['TypeTap'];
+        this.savedTypeTap = map['TypeTap'],
+        this.savedTapLocation = map['Location'];
   //  this.savedisSaved = map['isSaved'];
 
   ///convert from flowSaved Object to a map
@@ -33,6 +39,7 @@ class FlowSaved {
       'Distance': this.savedDistance,
       'Flowing': this.savedFlowing,
       'TypeTap': this.savedTypeTap,
+      'Location': this.savedTapLocation,
       // 'isSaved': this.savedisSaved,
     };
   }
