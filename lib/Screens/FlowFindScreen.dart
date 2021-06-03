@@ -51,6 +51,7 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
                       bottomSheetDescription: document['description'],
                       bottomSheetIsTypeTap: document['isTypeTap'],
                       bottomSheetIsFlowing: document['isFlowing'],
+                      tapLocation: document['location'],
                     );
                   });
             });
@@ -71,7 +72,18 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 0, 16),
+              child: Text(
+                'Water Sources',
+                style: TextStyle(
+                  color: primarycolor,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 70),
               child: StreamBuilder(
                 stream: flowFirestoreStream,
                 builder: (BuildContext context,
