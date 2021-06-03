@@ -34,15 +34,16 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        elevation: 15,
+        elevation: 10,
         selectedItemColor: primarycolor,
+        unselectedItemColor: textcolor.withOpacity(.1),
         currentIndex: currentMenuIndex,
         onTap: (value) {
           currentMenuIndex = value;
           setState(() {});
         },
-        showUnselectedLabels: true,
-        unselectedItemColor: textcolor,
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
         selectedFontSize: 12,
         unselectedFontSize: 12,
         items: [
@@ -50,7 +51,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             label: ('Home'),
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-home.svg',
-              color: textcolor,
+              color: textcolor.withOpacity(.9),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-home.svg',
@@ -61,7 +62,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             label: 'Find',
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-search.svg',
-              color: textcolor,
+              color: textcolor.withOpacity(.9),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-search.svg',
@@ -72,7 +73,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             label: 'Saved',
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-heart.svg',
-              color: textcolor,
+              color: textcolor.withOpacity(.9),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-heart.svg',
@@ -83,7 +84,7 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             label: 'About',
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-user.svg',
-              color: textcolor,
+              color: textcolor.withOpacity(.9),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-user.svg',
