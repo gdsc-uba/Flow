@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 Location location = Location();

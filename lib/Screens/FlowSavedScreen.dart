@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/constants.dart';
 import 'package:flow/Components/flow_app_bar.dart';
-import 'package:flow/Components/search_bar.dart';
 import 'package:flow/Components/sources_list_item.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -71,6 +70,7 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
                       bottomSheetDescription: flowList[index].savedDescription,
                       bottomSheetIsTypeTap: typeTap,
                       bottomSheetIsFlowing: flowList[index].savedFlowing,
+                      tapLocation: flowList[index].savedTapLocation,
                     );
                   });
             });
@@ -90,6 +90,7 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
                 savedDistance: flowList[index].savedDistance,
                 savedFlowing: flowList[index].savedFlowing,
                 savedTypeTap: flowList[index].savedTypeTap,
+                savedTapLocation: flowList[index].savedTapLocation,
               ),
               flowList[index].savedID,
             );
@@ -154,15 +155,19 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 0, 8.0),
-                  child: BodyTextBold(
-                    title: 'Saved Water Sources',
-                    color: primarycolor,
+                  padding: const EdgeInsets.fromLTRB(20, 20, 0, 16),
+                  child: Text(
+                    'Saved \nWater Sources',
+                    style: TextStyle(
+                      color: primarycolor,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 50),
+                margin: EdgeInsets.only(top: 100),
                 child: ListView.builder(
                     itemCount: flowList.length,
                     itemExtent: 50,
@@ -187,8 +192,8 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
     setState(() {});
   }
 
-  void loadSPData() {
-    List<String> spList = flowSharedPreferences.getStringList('list');
+  void loadSPData() async {
+    List<String> spList = await flowSharedPreferences.getStringList('list');
     flowList = spList
         .map((savedItem) => FlowSaved.fromMap(json.decode(savedItem)))
         .toList();

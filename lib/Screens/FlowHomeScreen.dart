@@ -1,5 +1,4 @@
 import 'package:flow/Components/Permissions.dart';
-import 'package:flow/Components/flow_bottom_nav_bar.dart';
 import 'package:flow/Screens/FlowAskPermissionsScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,41 +23,38 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
   // }
 
   Future<void> checkPermissionStatus() async {
-    PermissionStatus currentPermissionStatus = await getPermissionStatus();
+    Future.delayed(Duration(seconds: 10), () async {
+      PermissionStatus currentPermissionStatus = await getPermissionStatus();
+      print(
+          'permission  in check perm func from permisssion page getpermstat func is : ${await getPermissionStatus()}');
 
-    // print(
-    //     'permission  in check perm func from permisssion page getpermstat func without await is : ${getPermissionStatus()}');
-
-    print(
-        'permission  in check perm func from permisssion page getpermstat func is : ${await getPermissionStatus()}');
-
-    if (currentPermissionStatus != PermissionStatus.granted) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (BuildContext context) => FlowAskPermissions()),
-        );
-      });
-    }
+      if (currentPermissionStatus != PermissionStatus.granted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (BuildContext context) => FlowAskPermissions()),
+          );
+        });
+      }
+    });
   }
 
   Future<void> checkIfServiceEnabled() async {
-    bool serviceEnabledStatus = await checkServiceEnabled();
+    Future.delayed(Duration(seconds: 15), () async {
+      bool serviceEnabledStatus = await checkServiceEnabled();
 
-    // print(
-    //     'wether service enabled status from permission page is without await is : ${checkServiceEnabled()}');
+      print(
+          'wether enabled status from permission page is : ${await checkServiceEnabled()}');
 
-    print(
-        'wether enabled status from permission page is : ${await checkServiceEnabled()}');
-
-    if (serviceEnabledStatus != true) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (BuildContext context) => FlowAskEnableLocation()),
-        );
-      });
-    }
+      if (serviceEnabledStatus != true) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (BuildContext context) => FlowAskEnableLocation()),
+          );
+        });
+      }
+    });
   }
 
   @override
