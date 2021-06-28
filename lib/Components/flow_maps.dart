@@ -1,3 +1,6 @@
+import 'package:flow/Components/Permissions.dart';
+import 'package:flow/Components/directions/distance_calculator.dart';
+import 'package:flow/Components/directions/prompt_closest_source.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +9,15 @@ import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flow/Components/bottom_sheet_info.dart';
+import 'package:location/location.dart';
 import 'directions/directions_repository.dart';
 import 'directions/directions_model.dart';
 import 'bottom_sheet_info.dart';
+import 'flow_location.dart';
+import 'flow_snackbar.dart';
+import 'dart:math';
 
+// ignore: must_be_immutable
 class FlowMaps extends StatefulWidget {
   FlowMaps() : super();
   Directions directionInfo;
@@ -42,8 +50,21 @@ class _FlowMapsState extends State<FlowMaps> {
   BitmapDescriptor mapMarker;
   Directions directionInfo;
   Directions dirInfoFromSheet;
-  LatLng currentLocation = LatLng(6.0073798, 10.2478352);
-  LatLng finalLocation = LatLng(6.0113798, 10.2678352);
+  Directions dirInfoFromClosestSource;
+  LatLng currentLocation;
+  LatLng markerLocation;
+
+  //LatLng currentLocation = LatLng(6.0073798, 10.2478352);
+  //LatLng finalLocation = LatLng(6.0113798, 10.2678352);
+  List<double> calculatedDistances;
+
+  double shortestDistance = 1;
+  String closestSourceDistance;
+  String closestSourceID;
+  String closestSourceDescription;
+  List<double> sourceDistancesList;
+  GeoPoint firebaseLocation;
+  LatLng markerLocForCalc;
 
   final Stream<QuerySnapshot> flowFirestoreStream =
       FirebaseFirestore.instance.collection('flow_water_sources').snapshots();
@@ -59,21 +80,50 @@ class _FlowMapsState extends State<FlowMaps> {
     // TODO: implement initState
     super.initState();
     setCustomMarker();
+    //getCurrentLocation();
     //assignDirInfo();
   }
 
   ///Setting custom marker icons
   void setCustomMarker() async {
+    Size screenSize = MediaQuery.of(context).size;
+    Size markerSize;
+    if (screenSize.width < 1000) {
+      markerSize = Size.square(35);
+    } else {
+      markerSize = Size.square(80);
+    }
     mapMarkerRed = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'Assets/images/marker-icon-red.png');
+        ImageConfiguration(
+          size: markerSize,
+        ),
+        'Assets/images/marker-icon-red.png');
 
     mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'Assets/images/marker-icon-green.png');
+        ImageConfiguration(
+          size: markerSize,
+        ),
+        'Assets/images/marker-icon-green.png');
     // setState(() {});
   }
 
   _onCameraMove(CameraPosition position) {
     _lastMapPosition = position.target;
+  }
+
+  ///getting the current location
+  getCurrentLocation() async {
+    PermissionStatus currentPermissionStatus = await getPermissionStatus();
+    if (currentPermissionStatus == PermissionStatus.granted) {
+      print('get current location is running from flow maps');
+      final LocationData currentLocData = await getLocation();
+      currentLocation =
+          LatLng(currentLocData.latitude, currentLocData.longitude);
+
+      print('current location data is $currentLocation');
+      return currentLocation;
+      // }
+    }
   }
 
   /// function to toggle between normal view and satellite view when the button is pressed
@@ -90,14 +140,13 @@ class _FlowMapsState extends State<FlowMaps> {
     String iconLink,
   ) {
     return FloatingActionButton(
-      mini: true,
+      // mini: true,
       onPressed: function,
-      //  materialTapTargetSize: MaterialTapTargetSize.padded,
       backgroundColor: Colors.white,
       child: SvgPicture.asset(
         iconLink,
         color: primarycolor,
-        height: 16,
+        // height: 16,
       ),
     );
   }
@@ -117,7 +166,7 @@ class _FlowMapsState extends State<FlowMaps> {
                   _onMapTypeButtonPressed,
                   //   Icons.map,
                   'Assets/icons/svgs/fi-rr-map-change.svg',
-                ), // toggle map type botton
+                ), // toggle map type button
                 SizedBox(height: 10.0),
 
                 /*  button(
@@ -150,8 +199,12 @@ class _FlowMapsState extends State<FlowMaps> {
                   backgroundColor: Colors.transparent,
                 ),
               );
+
             case ConnectionState.none:
-              return BodyText(title: 'You are offline');
+              return FlowSnackBar(
+                text: 'You are offline',
+              );
+
             default:
               for (int i = 0; i < snapshot.data.docs.length; i++) {
                 if (snapshot.data.docs[i]['isFlowing'] == false) {
@@ -159,6 +212,9 @@ class _FlowMapsState extends State<FlowMaps> {
                 } else {
                   mapMarker = mapMarkerGreen;
                 }
+                markerLocation = LatLng(
+                    snapshot.data.docs[i]['location'].latitude,
+                    snapshot.data.docs[i]['location'].longitude);
 
                 flowMarkers.add(
                   new Marker(
@@ -167,8 +223,7 @@ class _FlowMapsState extends State<FlowMaps> {
                     zIndex: 5,
                     icon: mapMarker,
                     markerId: MarkerId(snapshot.data.docs[i]['ID']),
-                    position: LatLng(snapshot.data.docs[i]['location'].latitude,
-                        snapshot.data.docs[i]['location'].longitude),
+                    position: markerLocation,
                     infoWindow: InfoWindow(title: snapshot.data.docs[i]['ID']),
 
                     onTap: () async {
@@ -184,15 +239,49 @@ class _FlowMapsState extends State<FlowMaps> {
                               bottomSheetIsFlowing: snapshot.data.docs[i]
                                   ['isFlowing'],
                               tapLocation: snapshot.data.docs[i]['location'],
+                              // distance: directionInfo.totalDistance,
                             );
                           });
+                      // NavigationInstructions(
+                      //   tapID: snapshot.data.docs[i]['ID'],
+                      //   tapDescription: snapshot.data.docs[i]['description'],
+                      //   time: dirInfoFromSheet.totalDistance,
+                      //   distance: dirInfoFromSheet.totalDistance,
+                      //   navInfo: dirInfoFromSheet,
+                      // );
 
                       directionInfo = dirInfoFromSheet;
                       setState(() {});
                     }, //load bottom sheet
                   ),
                 );
-              }
+              } // end of loop
+
+              // currentLocation = getCurrentLocation();
+              //
+              // /// Calculating the distance to all sources and finding the closest
+              // Future.delayed(Duration(seconds: 5), () {
+              //   for (int i = 0; i < snapshot.data.docs.length; i++) {
+              //     LatLng markerLoc = LatLng(
+              //       snapshot.data.docs[i]['location'].latitude,
+              //       snapshot.data.docs[i]['location'].longitude,
+              //     );
+              //     sourceDistancesList = [
+              //       calculateClosestSource(currentLocation, markerLoc),
+              //     ];
+              //   } //end for loop
+              //
+              //   print('distancelist = $sourceDistancesList');
+              //
+              //   ///Finding shortest distance and its index
+              //   shortestDistance = sourceDistancesList.reduce(min);
+              //   var index = sourceDistancesList
+              //       .indexOf(sourceDistancesList.reduce(min));
+              //   print(shortestDistance);
+              //   print('shortest distance index is $index');
+              //
+              //   // popUpClosestSource();
+              // });
 
               return GoogleMap(
                   initialCameraPosition: CameraPosition(
@@ -225,5 +314,45 @@ class _FlowMapsState extends State<FlowMaps> {
                   );
           }
         });
+  }
+
+  ///method to find and show the closest water source
+  calculateClosestSource(
+    LatLng currentLocation,
+    LatLng markerLocation,
+  ) async {
+    // final double sourceDistance =
+    //     distanceCalculator(currentLocation, markerLocation);
+
+    return distanceCalculator(currentLocation, markerLocation);
+    // ///sorting for the shortest distance
+    // if (shortestDistance !=null &&
+    //     documentSnapshot[i]['ifIsFlowing'] == true) {
+    //   closestSourceDistance = shortestDistance.toStringAsFixed(2);
+    //   closestSourceID = documentSnapshot[i]['ID'];
+    //   closestSourceDescription = documentSnapshot[i]['description'];
+    //   firebaseLocation = documentSnapshot[i]['location'];
+    //   markerLocForCalc =
+    //       LatLng(firebaseLocation.latitude, firebaseLocation.longitude);
+    //   return shortestDistance;
+    // }
+  }
+
+  ///Show Closest Source Popup
+  Future<Directions> popUpClosestSource() async {
+    dirInfoFromClosestSource = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ShowClosestSource(
+            id: closestSourceID,
+            description: closestSourceDescription,
+            distance: '$closestSourceDistance Km',
+          );
+        });
+    setState(() {
+      directionInfo = dirInfoFromClosestSource;
+    });
+
+    return directionInfo;
   }
 }
