@@ -36,14 +36,14 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
         type: BottomNavigationBarType.fixed,
         elevation: 10,
         selectedItemColor: primarycolor,
-        unselectedItemColor: textcolor.withOpacity(.1),
+        unselectedItemColor: textcolor.withOpacity(.7),
         currentIndex: currentMenuIndex,
         onTap: (value) {
           currentMenuIndex = value;
           setState(() {});
         },
-        showUnselectedLabels: false,
-        showSelectedLabels: false,
+        showUnselectedLabels: true,
+        showSelectedLabels: true,
         selectedFontSize: 12,
         unselectedFontSize: 12,
         items: [
