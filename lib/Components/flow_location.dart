@@ -1,5 +1,4 @@
 import 'package:location/location.dart';
-import 'package:flutter/material.dart';
 
 LocationData currentPosition;
 Location location = Location();
@@ -10,12 +9,12 @@ getLocation() async {
   currentPosition = await location.getLocation();
 
   ///listening for location changes
-  // location.onLocationChanged.listen(
-  //   (LocationData currentLocation) {
-  //     currentPosition = currentLocation;
-  //     return currentLocation;
-  //   },
-  // );
+  location.onLocationChanged.listen(
+    (LocationData currentLocation) {
+      currentPosition = currentLocation;
+      return currentLocation;
+    },
+  );
   return currentPosition;
 }
 // class MyLocation extends StatefulWidget {
