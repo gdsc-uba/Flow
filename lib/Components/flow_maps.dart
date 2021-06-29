@@ -87,23 +87,19 @@ class _FlowMapsState extends State<FlowMaps> {
   ///Setting custom marker icons
   void setCustomMarker() async {
     Size screenSize = MediaQuery.of(context).size;
-    Size markerSize;
+    //Size markerSize;
     if (screenSize.width < 1000) {
-      markerSize = Size.square(35);
+      mapMarkerRed = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(), 'Assets/images/marker-icon-red-small.png');
+      mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(), 'Assets/images/marker-icon-green-small.png');
     } else {
-      markerSize = Size.square(80);
+      mapMarkerRed = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(), 'Assets/images/marker-icon-red.png');
+      mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(), 'Assets/images/marker-icon-green.png');
     }
-    mapMarkerRed = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(
-          size: markerSize,
-        ),
-        'Assets/images/marker-icon-red.png');
 
-    mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(
-          size: markerSize,
-        ),
-        'Assets/images/marker-icon-green.png');
     // setState(() {});
   }
 
