@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flow/Components/Permissions.dart';
+import 'package:flow/Components/flow_location.dart';
 import 'package:flow/Screens/FlowAskPermissionsScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/Components/flow_app_bar.dart';
 import 'package:flow/Screens/FlowAskEnableLocationScreen.dart';
 import 'package:flow/Components/flow_maps.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class FlowHomeScreen extends StatefulWidget {
@@ -14,16 +17,30 @@ class FlowHomeScreen extends StatefulWidget {
 
 class _FlowHomeScreenState extends State<FlowHomeScreen> {
   Location location = Location();
+  double shortestDistance;
+  String closestSourceDistance;
+  String closestSourceID;
+  String closestSourceDescription;
+  List<double> sourceDistancesList;
+  LatLng currentLocation;
+  LatLng markerLocation;
+  GeoPoint firebaseLocation;
+
+  final Stream<QuerySnapshot> flowFirestoreStream =
+      FirebaseFirestore.instance.collection('flow_water_sources').snapshots();
 
   // @override
   // void initState() {
-  //   getPermissionStatus();
-  //   checkServiceEnabled();
+  //   //getCurrentLocation();
+  //   Future.delayed(Duration(seconds: 2), () {
+  //     calculateClosestSource();
+  //   });
+  //
   //   super.initState();
   // }
 
   Future<void> checkPermissionStatus() async {
-    Future.delayed(Duration(seconds: 10), () async {
+    Future.delayed(Duration(seconds: 5), () async {
       PermissionStatus currentPermissionStatus = await getPermissionStatus();
       print(
           'permission  in check perm func from permisssion page getpermstat func is : ${await getPermissionStatus()}');
@@ -40,7 +57,7 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
   }
 
   Future<void> checkIfServiceEnabled() async {
-    Future.delayed(Duration(seconds: 15), () async {
+    Future.delayed(Duration(seconds: 7), () async {
       bool serviceEnabledStatus = await checkServiceEnabled();
 
       print(
@@ -70,6 +87,7 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
         child: Stack(
           children: [
             FlowMaps(),
+            //calculateClosestSource(),
             // SearchBar(),
           ],
         ),
@@ -77,4 +95,14 @@ class _FlowHomeScreenState extends State<FlowHomeScreen> {
       //  bottomNavigationBar: FlowBottomNavBar(),
     );
   }
+
+  // ///getting the current location
+  // getCurrentLocation() async {
+  //   final LocationData currentLocData = await getLocation();
+  //   currentLocation = LatLng(currentLocData.latitude, currentLocData.longitude);
+  //
+  //   print('current location data is $currentLocation');
+  //
+  //   return currentLocation;
+  // }
 }
