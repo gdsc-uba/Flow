@@ -45,9 +45,14 @@ class _FlowAskPermissionsState extends State<FlowAskPermissions> {
                 SizedBox(height: 20),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * .1),
-                  child: HeadlineTextBold(
-                      title: 'Allow Flow to access your location?',
-                      color: Colors.white),
+                  child: Text(
+                    'Allow Flow to access your location?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   height: 10,
