@@ -1,6 +1,7 @@
 import 'package:flow/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/Components/Permissions.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FlowAskEnableLocation extends StatefulWidget {
   @override
@@ -16,60 +17,61 @@ class _FlowAskEnableLocationState extends State<FlowAskEnableLocation> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Spacer(),
-
             /// Image and text Area
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * .2),
-                  child: Image(
-                    image: AssetImage('Assets/images/placeholder_image.png'),
-                  ),
-                ),
-                SizedBox(height: 20),
-                // Padding(
-                //   padding: EdgeInsets.symmetric(horizontal: screenWidth * .1),
-                //   child: Text(
-                //     'Flow needs access to your location for certain features to work properly',
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 16,
-                //     ),
-                //   ),
-                // ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: screenWidth * .1),
-                  child: Text(
-                    'It seems your location isn\'t turned on',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: primarycolor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-              ],
+            Spacer(),
+            Container(
+              padding: EdgeInsets.only(
+                  left: screenWidth * .1, right: screenHeight * .15),
+              //width: screenWidth * .8,
+              child: SvgPicture.asset(
+                'Assets/illustrations/request-location-on.svg',
+                height: screenHeight * .5,
+              ),
             ),
+
+            //SizedBox(height: 10),
+            SizedBox(height: 30),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * .1),
+              child: Text(
+                'Hmm, We can\'t seem to find you.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: primarycolor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+            SizedBox(height: 5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * .1),
+              child: Text(
+                'Please make sure your location is turned on.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: primarycolor,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
 
             ///Allow Permissions Buttons
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.all(20),
+              height: 45,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 color: primarycolor,
               ),
               // ignore: deprecated_member_use
               child: FlatButton(
+                height: 45,
                 child: HeadlineTextBold(
                   title: 'Turn it on',
                   color: Colors.white,
@@ -80,9 +82,6 @@ class _FlowAskEnableLocationState extends State<FlowAskEnableLocation> {
                   });
                 },
               ),
-            ),
-            SizedBox(
-              height: 5,
             ),
             // ignore: deprecated_member_use
             FlatButton(

@@ -16,8 +16,8 @@ double screenWidth = MediaQueryData().size.width;
 
 double bodyFontSizeSetter() {
   double customBodyFontSize;
-  if (screenWidth < 800) {
-    customBodyFontSize = 14;
+  if (screenWidth < 1000) {
+    customBodyFontSize = 12;
   }
   {
     customBodyFontSize = 16;
@@ -31,11 +31,11 @@ double bodyFontSizeSetter() {
 
 double headerFontSizeSetter() {
   double customHeaderFontSize;
-  if (screenWidth < 800) {
-    customHeaderFontSize = 16;
+  if (screenWidth < 1000) {
+    customHeaderFontSize = 14;
   }
   {
-    customHeaderFontSize = 20;
+    customHeaderFontSize = 18;
   }
   return customHeaderFontSize;
 }

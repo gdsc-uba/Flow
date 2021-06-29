@@ -104,13 +104,14 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
 
                     //this is the data we get
                     default:
-                      List<DocumentSnapshot> flowDocuments = snapshot.data.docs;
+                      List<DocumentSnapshot> flowSourcesDocuments =
+                          snapshot.data.docs;
 
                       return ListView.builder(
                         itemExtent: 50,
-                        itemCount: snapshot.data.docs.length,
+                        itemCount: flowSourcesDocuments.length,
                         itemBuilder: (context, index) => buildWaterSourcesList(
-                            context, snapshot.data.docs[index]),
+                            context, flowSourcesDocuments[index]),
                       );
                   }
                 },

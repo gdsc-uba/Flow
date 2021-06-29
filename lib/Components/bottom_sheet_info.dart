@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flow/Components/directions/distance_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:location/location.dart';
 import 'directions/directions_model.dart';
-import 'directions/directions_repository.dart';
 import 'flow_maps.dart';
 import 'flow_location.dart';
 
@@ -39,19 +39,17 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
   String ifIsTypeTap;
   String ifIsFlowing;
   bool isSaved;
-  //Directions _info;
   LatLng markerLocation;
   LatLng currentLocation;
   Directions dirInfo;
-  Widget circIndicator = SizedBox(
-    width: 2,
-  );
+  String estDistance;
+  Widget circularIndicator = SizedBox(width: 2);
+  // Widget distanceText;
 
   // ignore: deprecated_member_use
   List<FlowSaved> flowList = List<FlowSaved>();
 
-  ///Instantiating shared Prefs
-
+  //Instantiating shared Prefs
   SharedPreferences flowSharedPreferences;
 
   @override
@@ -59,7 +57,33 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
     super.initState();
     initFlowSharedPreferences();
     getCurrentLocation();
-    //  ifTapIsSaved();
+    // ifTapIsSaved();
+    Future.delayed(Duration(seconds: 2), () {
+      calcDistance();
+    });
+
+    //distanceCalculator(currentLocation, markerLocation);
+  }
+
+  Widget distanceText() {
+    if (estDistance != null) {
+      return Text(
+        '$estDistance km',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: primarycolor,
+          fontSize: 28,
+        ),
+      );
+    } else {
+      return Text(
+        'Calculating',
+        style: TextStyle(
+          fontSize: 12,
+          color: textcolor.withOpacity(.7),
+        ),
+      );
+    }
   }
 
   ///initialising Shared Preferences
@@ -68,13 +92,40 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
     loadSPData();
   }
 
+  ///getting the current location
   getCurrentLocation() async {
+    print('get current locationf from bottom sheet is running');
     final LocationData currentLocData = await getLocation();
     currentLocation = LatLng(currentLocData.latitude, currentLocData.longitude);
 
     print('current location data is $currentLocation');
 
     return currentLocation;
+
+    // PermissionStatus currentPermissionStatus;
+    // if (currentPermissionStatus == PermissionStatus.granted) {
+    //   print('get current locationf from bottom sheet is running');
+    //   final LocationData currentLocData = await getLocation();
+    //   currentLocation =
+    //       LatLng(currentLocData.latitude, currentLocData.longitude);
+    //
+    //   print('current location data is $currentLocation');
+    //
+    //   return currentLocation;
+    // }
+  }
+
+  ///method to call the distance calculator
+
+  calcDistance() async {
+    final double calculatedDistance =
+        distanceCalculator(currentLocation, markerLocation);
+    setState(() {
+      estDistance = calculatedDistance.toStringAsFixed(2);
+    });
+    print('estimated calculated distance is $estDistance');
+
+    return estDistance;
   }
 
   @override
@@ -91,10 +142,14 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
       ifIsFlowing = 'Not Flowing';
     }
 
-    markerLocation = LatLng(
-      widget.tapLocation.latitude.toDouble(),
-      widget.tapLocation.longitude.toDouble(),
-    );
+    markerLocation =
+        LatLng(widget.tapLocation.latitude, widget.tapLocation.longitude);
+
+    // if (estDistance == null) {
+    //   setState(() {
+    //     estDistance = 'N/A';
+    //   });
+    // }
 
     return Container(
       padding: EdgeInsets.all(20),
@@ -159,16 +214,18 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     BodyText(title: 'Approx. Distance:'),
-                    Text(
-                      ' km',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: primarycolor,
-                        fontSize: 28,
-                      ),
-                    ),
+                    distanceText(),
+                    // Text(
+                    //   '$estDistance km',
+                    //   style: TextStyle(
+                    //     fontWeight: FontWeight.bold,
+                    //     color: primarycolor,
+                    //     fontSize: 28,
+                    //   ),
                   ],
                 ),
               ],
@@ -194,29 +251,18 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
                   print(currentLocation);
                   print(dirInfo.polylinePoints);
                   setState(() {
-                    circIndicator = CircularProgressIndicator(
+                    circularIndicator = CircularProgressIndicator(
                       backgroundColor: Colors.transparent,
                     );
                   });
 
-                  // Future.delayed(Duration(seconds: 1), () {
-                  //   Navigator.pop(context);
-                  //   setState(() {});
-                  //
-                  //   // Navigator.push(
-                  //   //   context,
-                  //   //   MaterialPageRoute(
-                  //   //     builder: (context) => FlowMaps(
-                  //   //       directionInfo: dirInfo,
-                  //   //     ),
-                  // });
                   Future.delayed(Duration(seconds: 1), () async {
                     Navigator.pop(context, dirInfo);
                   });
                 },
               ),
               SizedBox(width: 10),
-              circIndicator,
+              circularIndicator,
               SizedBox(width: 20),
               ifTapIsSaved(),
             ],
@@ -228,24 +274,11 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
     );
   }
 
-  // ///Get Directions func
-  // Future<Directions> getDirections(LatLng origin, LatLng destination) async {
-  //   final directions = await DirectionsRepository()
-  //       .getDirections(origin: origin, destination: destination);
-  //
-  //   //  print(directionInfo);
-  //   // print(directions);
-  //   // setState(() {});
-  //   //return directionInfo;
-  //   return directions;
-  // }
-
   /// method to check if is saved and return appropriate icon
-
   ifTapIsSaved() {
     Widget checkIfSaved;
+    //loop to go through the entire list and check if this source has been saved or not
 
-    ///loop to go through the entire list and check if this source has been saved or not
     if (flowList.isEmpty) {
       checkIfSaved = addToSavedFAB();
     } else {
@@ -274,9 +307,11 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
           addToSavedList(FlowSaved(
             savedID: widget.bottomSheetID,
             savedDescription: widget.bottomSheetDescription,
-            savedDistance: widget.distance.toString(),
+            savedDistance: '$estDistance Km',
             savedFlowing: widget.bottomSheetIsFlowing,
             savedTypeTap: ifIsTypeTap,
+            //savedTapLocation: widget.tapLocation,
+
             // savedisSaved: isSaved,
           ));
 
@@ -341,9 +376,10 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
   }
 
   void loadSPData() {
-    List<String> spList = (flowSharedPreferences.getStringList('list'));
+    List<String> spList = flowSharedPreferences.getStringList('list');
     flowList = spList
         .map((savedItem) => FlowSaved.fromMap(json.decode(savedItem)))
         .toList();
+    //setState(() {});
   }
 }
