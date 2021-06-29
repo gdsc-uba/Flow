@@ -58,13 +58,15 @@ class _FlowAskPermissionsState extends State<FlowAskPermissions> {
             ///Allow Permissions Buttons
             Container(
               width: double.infinity,
-              margin: const EdgeInsets.all(20),
+              height: 45,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
                 color: Colors.white,
               ),
               // ignore: deprecated_member_use
               child: FlatButton(
+                height: 45,
                 child: HeadlineTextBold(
                   title: 'Allow Permissions',
                   color: primarycolor,
