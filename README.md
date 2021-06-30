@@ -1,7 +1,7 @@
 # Flow - Just go with the flow!
 Flow is a water source location mobile app that helps students of the University of Bamenda, Cameroon to find/locate clean water sources.
 
-<img src="https://github.com/Idadelveloper/Flow/blob/main/Assets/flow_mockups/Collage_mockup.jpg" />
+<img src="https://github.com/Idadelveloper/Flow/blob/main/Assets/flow_mockups/flow2.jpg" />
 
 
 ## Introduction
@@ -19,11 +19,12 @@ Let's consider two locations in Bambili A and B. As a result of the overpopulati
 
 
 ## Get the App!
-You can get the .apk file [here](https://drive.google.com/file/d/1yBzKgXHNx8vX8BhOkDXbrTYUE5U0tTOj/view?usp=sharing).
+You can get the .apk file [here](https://drive.google.com/file/d/1va0lWRXwSoB2xYVLwT24dVqEFrWPnXFJ/view?usp=sharing).
 Download and install the app.
 ## Usage
 * Open the app.
 * Explore!
+* You can also learn how the app works [here](https://flow-online.ga/)
 
 ## How to Build
 Follow [this](https://flutter.dev/docs/get-started/install) tutorial on how to install and set up flutter for mobile development.
@@ -58,8 +59,9 @@ Include the package name and version number in the pubspec.yaml file below the d
 Build the application following this [tutorial](https://flutter.dev/docs/deployment/android).
 
 #### TODOs
-* Make the get directions feature fully functional.
-* Distance Calculation.
+* ~~Make the get directions feature fully functional.~~
+* ~~Distance Calculation.~~
+* Implement a voting system to indicate if a water source has water supply or not.
 
 
 #### Contributors
