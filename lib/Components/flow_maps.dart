@@ -1,6 +1,4 @@
 import 'package:flow/Components/Permissions.dart';
-import 'package:flow/Components/directions/distance_calculator.dart';
-import 'package:flow/Components/directions/prompt_closest_source.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +13,7 @@ import 'directions/directions_model.dart';
 import 'bottom_sheet_info.dart';
 import 'flow_location.dart';
 import 'flow_snackbar.dart';
-import 'dart:math';
+import 'search_closest_source_button.dart';
 
 // ignore: must_be_immutable
 class FlowMaps extends StatefulWidget {
@@ -50,7 +48,6 @@ class _FlowMapsState extends State<FlowMaps> {
   BitmapDescriptor mapMarker;
   Directions directionInfo;
   Directions dirInfoFromSheet;
-  Directions dirInfoFromClosestSource;
   LatLng currentLocation;
   LatLng markerLocation;
 
@@ -62,7 +59,7 @@ class _FlowMapsState extends State<FlowMaps> {
   String closestSourceDistance;
   String closestSourceID;
   String closestSourceDescription;
-  List<double> sourceDistancesList;
+  final List<double> sourceDistancesList = [];
   GeoPoint firebaseLocation;
   LatLng markerLocForCalc;
 
@@ -77,7 +74,6 @@ class _FlowMapsState extends State<FlowMaps> {
 
   @override
   initState() {
-    // TODO: implement initState
     super.initState();
     setCustomMarker();
     //getCurrentLocation();
@@ -86,21 +82,10 @@ class _FlowMapsState extends State<FlowMaps> {
 
   ///Setting custom marker icons
   void setCustomMarker() async {
-    Size screenSize = MediaQuery.of(context).size;
-    //Size markerSize;
-    if (screenSize.width < 1000) {
-      mapMarkerRed = await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(), 'Assets/images/marker-icon-red-small.png');
-      mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(), 'Assets/images/marker-icon-green-small.png');
-    } else {
-      mapMarkerRed = await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(), 'Assets/images/marker-icon-red.png');
-      mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(), 'Assets/images/marker-icon-green.png');
-    }
-
-    // setState(() {});
+    mapMarkerGreen = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'Assets/images/marker-icon-green.png');
+    mapMarkerRed = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'Assets/images/marker-icon-red.png');
   }
 
   _onCameraMove(CameraPosition position) {
@@ -164,6 +149,7 @@ class _FlowMapsState extends State<FlowMaps> {
                   'Assets/icons/svgs/fi-rr-map-change.svg',
                 ), // toggle map type button
                 SizedBox(height: 10.0),
+                SearchClosestSourceButton(),
 
                 /*  button(
                     _onAddMarkerButtonPressed,
@@ -191,7 +177,7 @@ class _FlowMapsState extends State<FlowMaps> {
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
               return Center(
-                child: CircularProgressIndicator(
+                child: CircularProgressIndicator.adaptive(
                   backgroundColor: Colors.transparent,
                 ),
               );
@@ -234,7 +220,7 @@ class _FlowMapsState extends State<FlowMaps> {
                                   ['isTypeTap'],
                               bottomSheetIsFlowing: snapshot.data.docs[i]
                                   ['isFlowing'],
-                              tapLocation: snapshot.data.docs[i]['location'],
+                              tapLocation: markerLocation,
                               // distance: directionInfo.totalDistance,
                             );
                           });
@@ -251,33 +237,17 @@ class _FlowMapsState extends State<FlowMaps> {
                     }, //load bottom sheet
                   ),
                 );
-              } // end of loop
 
-              // currentLocation = getCurrentLocation();
-              //
-              // /// Calculating the distance to all sources and finding the closest
-              // Future.delayed(Duration(seconds: 5), () {
-              //   for (int i = 0; i < snapshot.data.docs.length; i++) {
-              //     LatLng markerLoc = LatLng(
-              //       snapshot.data.docs[i]['location'].latitude,
-              //       snapshot.data.docs[i]['location'].longitude,
-              //     );
-              //     sourceDistancesList = [
-              //       calculateClosestSource(currentLocation, markerLoc),
-              //     ];
-              //   } //end for loop
-              //
-              //   print('distancelist = $sourceDistancesList');
-              //
-              //   ///Finding shortest distance and its index
-              //   shortestDistance = sourceDistancesList.reduce(min);
-              //   var index = sourceDistancesList
-              //       .indexOf(sourceDistancesList.reduce(min));
-              //   print(shortestDistance);
-              //   print('shortest distance index is $index');
-              //
-              //   // popUpClosestSource();
-              // });
+                // ///Calculating distances and adding to the List;
+                // sourceDistancesList
+                //     .add(distanceCalculator(currentLocation, markerLocation));
+              } // end of loop
+              // calculateClosestSource(currentLocation, markerLocation);
+
+              ///Getting the shortest distance in the List of Distances
+              // shortestDistance = sourceDistancesList.reduce(min);
+              // print('list of distances is $sourceDistancesList');
+              // print('shortest distance within the list is $shortestDistance');
 
               return GoogleMap(
                   initialCameraPosition: CameraPosition(
@@ -312,43 +282,21 @@ class _FlowMapsState extends State<FlowMaps> {
         });
   }
 
-  ///method to find and show the closest water source
-  calculateClosestSource(
-    LatLng currentLocation,
-    LatLng markerLocation,
-  ) async {
-    // final double sourceDistance =
-    //     distanceCalculator(currentLocation, markerLocation);
-
-    return distanceCalculator(currentLocation, markerLocation);
-    // ///sorting for the shortest distance
-    // if (shortestDistance !=null &&
-    //     documentSnapshot[i]['ifIsFlowing'] == true) {
-    //   closestSourceDistance = shortestDistance.toStringAsFixed(2);
-    //   closestSourceID = documentSnapshot[i]['ID'];
-    //   closestSourceDescription = documentSnapshot[i]['description'];
-    //   firebaseLocation = documentSnapshot[i]['location'];
-    //   markerLocForCalc =
-    //       LatLng(firebaseLocation.latitude, firebaseLocation.longitude);
-    //   return shortestDistance;
-    // }
-  }
-
   ///Show Closest Source Popup
-  Future<Directions> popUpClosestSource() async {
-    dirInfoFromClosestSource = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ShowClosestSource(
-            id: closestSourceID,
-            description: closestSourceDescription,
-            distance: '$closestSourceDistance Km',
-          );
-        });
-    setState(() {
-      directionInfo = dirInfoFromClosestSource;
-    });
+  // Future<Directions> popUpClosestSource() async {
+  //   Directions dirInfoFromClosestSource = await showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return ShowClosestSource(
+  //           id: closestSourceID,
+  //           description: closestSourceDescription,
+  //           distance: '$closestSourceDistance Km',
+  //         );
+  //       });
+  //   setState(() {
+  //     directionInfo = dirInfoFromClosestSource;
+  //   });
 
-    return directionInfo;
-  }
+  //   return directionInfo;
+  // }
 }
