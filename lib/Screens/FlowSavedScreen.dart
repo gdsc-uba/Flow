@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flow/Components/bottom_sheet_info.dart';
 import 'package:flow/Components/flow_shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:flow/Components/flow_app_bar.dart';
 import 'package:flow/Components/sources_list_item.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FlowSavedScreen extends StatefulWidget {
@@ -49,12 +51,16 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
     } else {
       typeTap = false;
     }
-    return WaterSourcesListItem(
+    print(
+        'tap location from SP is ${flowList[index].savedTapLocationLatitude}');
+    print('tap id from SP is ${flowList[index].savedID}');
+
+    return WaterSourcesListItemSavedScreen(
       id: flowList[index].savedID,
       distance: flowList[index].savedDistance.toString(),
       isflowingiconlink: ifIsFlowingIconLink,
       moreInfoIcon: IconButton(
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.all(0),
           enableFeedback: true,
           icon: SvgPicture.asset(
             'Assets/icons/svgs/fi-rr-angle-small-down.svg',
@@ -70,7 +76,10 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
                       bottomSheetDescription: flowList[index].savedDescription,
                       bottomSheetIsTypeTap: typeTap,
                       bottomSheetIsFlowing: flowList[index].savedFlowing,
-                      tapLocation: flowList[index].savedTapLocation,
+                      tapLocation: LatLng(
+                        flowList[index].savedTapLocationLatitude,
+                        flowList[index].savedTapLocationLongitude,
+                      ),
                     );
                   });
             });
@@ -90,7 +99,10 @@ class _FlowSavedScreenState extends State<FlowSavedScreen> {
                 savedDistance: flowList[index].savedDistance,
                 savedFlowing: flowList[index].savedFlowing,
                 savedTypeTap: flowList[index].savedTypeTap,
-                savedTapLocation: flowList[index].savedTapLocation,
+                savedTapLocationLatitude:
+                    flowList[index].savedTapLocationLatitude,
+                savedTapLocationLongitude:
+                    flowList[index].savedTapLocationLongitude,
               ),
               flowList[index].savedID,
             );
