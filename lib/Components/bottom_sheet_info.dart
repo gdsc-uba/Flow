@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flow/Components/directions/distance_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flow/constants.dart';
@@ -19,7 +18,7 @@ class BottomSheetInfo extends StatefulWidget {
   final bool bottomSheetIsTypeTap;
   final bool bottomSheetIsFlowing;
   final String distance;
-  final GeoPoint tapLocation;
+  final LatLng tapLocation;
 
   BottomSheetInfo({
     Key key,
@@ -101,18 +100,6 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
     print('current location data is $currentLocation');
 
     return currentLocation;
-
-    // PermissionStatus currentPermissionStatus;
-    // if (currentPermissionStatus == PermissionStatus.granted) {
-    //   print('get current locationf from bottom sheet is running');
-    //   final LocationData currentLocData = await getLocation();
-    //   currentLocation =
-    //       LatLng(currentLocData.latitude, currentLocData.longitude);
-    //
-    //   print('current location data is $currentLocation');
-    //
-    //   return currentLocation;
-    // }
   }
 
   ///method to call the distance calculator
@@ -142,8 +129,9 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
       ifIsFlowing = 'Not Flowing';
     }
 
-    markerLocation =
-        LatLng(widget.tapLocation.latitude, widget.tapLocation.longitude);
+    // markerLocation =
+    //     LatLng(widget.tapLocation.latitude, widget.tapLocation.longitude);
+    markerLocation = widget.tapLocation;
 
     // if (estDistance == null) {
     //   setState(() {
@@ -310,7 +298,8 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
             savedDistance: '$estDistance Km',
             savedFlowing: widget.bottomSheetIsFlowing,
             savedTypeTap: ifIsTypeTap,
-            //savedTapLocation: widget.tapLocation,
+            savedTapLocationLatitude: markerLocation.latitude.toDouble(),
+            savedTapLocationLongitude: markerLocation.longitude.toDouble(),
 
             // savedisSaved: isSaved,
           ));
@@ -339,6 +328,8 @@ class BottomSheetInfoState extends State<BottomSheetInfo> {
               savedDistance: widget.distance.toString(),
               savedFlowing: widget.bottomSheetIsFlowing,
               savedTypeTap: ifIsTypeTap,
+              savedTapLocationLatitude: markerLocation.latitude.toDouble(),
+              savedTapLocationLongitude: markerLocation.longitude.toDouble(),
               // savedisSaved: isSaved,
             ),
             widget.bottomSheetID,

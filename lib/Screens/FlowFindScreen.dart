@@ -9,6 +9,7 @@ import 'package:flow/Components/sources_list_item.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FlowFindScreen extends StatefulWidget {
   @override
@@ -34,6 +35,8 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
       ifisflowingiconlink = 'Assets/icons/svgs/fi-rr-not-flowing.svg';
       flowingColor = textcolor;
     }
+
+    //Extracting a snippet from the description
     if (document['description'].toString().length < 20) {
       descriptionSnippet = document['description'];
     } else {
@@ -62,7 +65,8 @@ class _FlowFindScreenState extends State<FlowFindScreen> {
                       bottomSheetDescription: document['description'],
                       bottomSheetIsTypeTap: document['isTypeTap'],
                       bottomSheetIsFlowing: document['isFlowing'],
-                      tapLocation: document['location'],
+                      tapLocation: LatLng(document['location'].latitude,
+                          document['location'].longitude),
                     );
                   });
             });

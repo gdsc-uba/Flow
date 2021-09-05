@@ -15,6 +15,7 @@ getLocation() async {
       return currentLocation;
     },
   );
+
   return currentPosition;
 }
 // class MyLocation extends StatefulWidget {

@@ -1,4 +1,5 @@
 import 'package:flow/Components/Permissions.dart';
+import 'package:flow/Components/custom_dialog_route.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,16 @@ import 'package:location/location.dart';
 import 'directions/directions_repository.dart';
 import 'directions/directions_model.dart';
 import 'bottom_sheet_info.dart';
+import 'directions/nav_instructions.dart';
 import 'flow_location.dart';
 import 'flow_snackbar.dart';
 import 'search_closest_source_button.dart';
 
 // ignore: must_be_immutable
 class FlowMaps extends StatefulWidget {
-  FlowMaps() : super();
+  FlowMaps({this.directioninformation}) : super();
   Directions directionInfo;
+  final Directions directioninformation;
 
   ///Get Directions func
   getDirections(LatLng origin, LatLng destination) async {
@@ -220,34 +223,36 @@ class _FlowMapsState extends State<FlowMaps> {
                                   ['isTypeTap'],
                               bottomSheetIsFlowing: snapshot.data.docs[i]
                                   ['isFlowing'],
-                              tapLocation: markerLocation,
+                              tapLocation: LatLng(
+                                  snapshot.data.docs[i]['location'].latitude,
+                                  snapshot.data.docs[i]['location'].longitude),
                               // distance: directionInfo.totalDistance,
                             );
                           });
-                      // NavigationInstructions(
-                      //   tapID: snapshot.data.docs[i]['ID'],
-                      //   tapDescription: snapshot.data.docs[i]['description'],
-                      //   time: dirInfoFromSheet.totalDistance,
-                      //   distance: dirInfoFromSheet.totalDistance,
-                      //   navInfo: dirInfoFromSheet,
-                      // );
+
+                      // if (dirInfoFromSheet != null) {
+                      //   Navigator.push(context, CustomHeroDialogRoute(
+                      //     builder: (context) {
+                      //       return NavigationInstructions(
+                      //         tapID: snapshot.data.docs[i]['ID'],
+                      //         tapDescription: snapshot.data.docs[i]
+                      //             ['description'],
+                      //         time: dirInfoFromSheet.totalDuration,
+                      //         distance: dirInfoFromSheet.totalDistance,
+                      //         navInfo: dirInfoFromSheet,
+                      //       );
+                      //     },
+                      //   ));
+                      // }
+
+                      directionInfo = widget.directioninformation;
 
                       directionInfo = dirInfoFromSheet;
                       setState(() {});
                     }, //load bottom sheet
                   ),
                 );
-
-                // ///Calculating distances and adding to the List;
-                // sourceDistancesList
-                //     .add(distanceCalculator(currentLocation, markerLocation));
               } // end of loop
-              // calculateClosestSource(currentLocation, markerLocation);
-
-              ///Getting the shortest distance in the List of Distances
-              // shortestDistance = sourceDistancesList.reduce(min);
-              // print('list of distances is $sourceDistancesList');
-              // print('shortest distance within the list is $shortestDistance');
 
               return GoogleMap(
                   initialCameraPosition: CameraPosition(
