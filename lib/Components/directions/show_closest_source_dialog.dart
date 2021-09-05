@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flow/Components/bottom_sheet_info.dart';
 import 'package:flow/Components/flow_location.dart';
 import 'package:flow/constants.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class _ShowClosestSourceDialogState extends State<ShowClosestSourceDialog> {
   getLoc() async {
     LocationData currentLoc = await getLocation();
     currentLocation = LatLng(currentLoc.latitude, currentLoc.longitude);
+
     return currentLocation;
   }
 
@@ -82,43 +84,48 @@ class _ShowClosestSourceDialogState extends State<ShowClosestSourceDialog> {
               );
             default:
               Future.delayed(Duration(seconds: 3), () {
-                for (int i = 0; i < snapshot.data.docs.length; i++) {
-                  markerLocation = LatLng(
-                      snapshot.data.docs[i]['location'].latitude,
-                      snapshot.data.docs[i]['location'].longitude);
-                  // sourceDistancesList = [];
-                  // sourceIDsList = [];
-                  // sourceLocationList = [];
-                  // sourceDistancesList = [];
-                  if (snapshot.data.docs[i]['isFlowing'] == true) {
+                if (sourceDistancesList.isEmpty) {
+                  for (int i = 0; i < snapshot.data.docs.length; i++) {
+                    markerLocation = LatLng(
+                        snapshot.data.docs[i]['location'].latitude,
+                        snapshot.data.docs[i]['location'].longitude);
+                    // sourceDistancesList = [];
                     // sourceIDsList = [];
-                    sourceIDsList.add(snapshot.data.docs[i]['ID']);
-                    //sourceLocationList = [];
-                    sourceLocationList.add(snapshot.data.docs[i]['location']);
-                    //sourceDistancesList = [];
-                    sourceDistancesList.add(
-                      distanceCalculator(currentLocation, markerLocation),
-                    );
+                    // sourceLocationList = [];
+                    // sourceDistancesList = [];
+                    if (snapshot.data.docs[i]['isFlowing'] == true) {
+                      // sourceIDsList = [];
+                      sourceIDsList.add(snapshot.data.docs[i]['ID']);
+                      //sourceLocationList = [];
+                      sourceLocationList.add(snapshot.data.docs[i]['location']);
+                      //sourceDistancesList = [];
+                      sourceDistancesList.add(
+                        distanceCalculator(currentLocation, markerLocation),
+                      );
+                    }
                   }
-                }
 
-                ///Getting the shortest distance in the Lists of Distances
-                setState(() {
-                  shortestDistance = sourceDistancesList.reduce(min);
-                  int indexOfClosestSource =
-                      sourceDistancesList.indexOf(shortestDistance);
-                  closestSourceID = sourceIDsList[indexOfClosestSource];
-                  closestSourceGeopoint =
-                      sourceLocationList[indexOfClosestSource];
-                  closestSourceLocation = LatLng(
-                    closestSourceGeopoint.latitude,
-                    closestSourceGeopoint.longitude,
-                  );
-                });
-                print('does current location change lets see:$currentLocation');
-                print('list of distances is $sourceDistancesList');
-                print('shortest distance within the list is $shortestDistance');
-                print('shortest source ID within the list is $closestSourceID');
+                  ///Getting the shortest distance in the Lists of Distances
+                  setState(() {
+                    shortestDistance = sourceDistancesList.reduce(min);
+                    int indexOfClosestSource =
+                        sourceDistancesList.indexOf(shortestDistance);
+                    closestSourceID = sourceIDsList[indexOfClosestSource];
+                    closestSourceGeopoint =
+                        sourceLocationList[indexOfClosestSource];
+                    closestSourceLocation = LatLng(
+                      closestSourceGeopoint.latitude,
+                      closestSourceGeopoint.longitude,
+                    );
+                  });
+                  print(
+                      'does current location change lets see:$currentLocation');
+                  print('list of distances is $sourceDistancesList');
+                  print(
+                      'shortest distance within the list is $shortestDistance');
+                  print(
+                      'shortest source ID within the list is $closestSourceID');
+                }
               });
 
               if (shortestDistance == null) {
@@ -166,12 +173,24 @@ class _ShowClosestSourceDialogState extends State<ShowClosestSourceDialog> {
                             GestureDetector(
                               onTap: () async {
                                 Feedback.forTap(context);
-                                Navigator.of(context).pop(
-                                  FlowMaps().directionInfo = await FlowMaps()
+                                FlowMaps(
+                                  directioninformation: await FlowMaps()
                                       .getDirections(currentLocation,
                                           closestSourceLocation),
                                 );
-                                setState(() {});
+                                // showBottomSheet(
+                                //     context: context,
+                                //     builder: (BuildContext context) {
+                                //       return BottomSheetInfo(
+                                //         bottomSheetID: closestSourceID,
+                                //         bottomSheetDescription:
+                                //             closestSourceDescription,
+                                //         bottomSheetIsFlowing: true,
+                                //         bottomSheetIsTypeTap: true,
+                                //         tapLocation: closestSourceLocation,
+                                //       );
+                                //   });
+                                Navigator.of(context).pop();
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -195,11 +214,15 @@ class _ShowClosestSourceDialogState extends State<ShowClosestSourceDialog> {
                                 // directionInfo = await FlowMaps().getDirections(
                                 //     currentLocation, closestSourceLocation);
                                 // Navigator.of(context).pop(directionInfo);
+                                for (var i = 0;
+                                    i < sourceDistancesList.length;
+                                    i++) {
+                                  sourceDistancesList.remove(i);
+                                  sourceIDsList.remove(i);
+                                  sourceLocationList.remove(i);
+                                  sourceDistancesList.remove(i);
+                                }
 
-                                sourceDistancesList = [];
-                                sourceIDsList = [];
-                                sourceLocationList = [];
-                                sourceDistancesList = [];
                                 Navigator.pop(context);
                               },
                               child: Container(
