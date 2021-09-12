@@ -1,12 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class FlowSaved {
   String savedID;
   String savedDescription;
   String savedDistance;
   bool savedFlowing;
   String savedTypeTap;
-  GeoPoint savedTapLocation;
+  double savedTapLocationLatitude;
+  double savedTapLocationLongitude;
   //bool savedisSaved;
 
   FlowSaved({
@@ -15,7 +14,8 @@ class FlowSaved {
     this.savedDistance,
     this.savedFlowing,
     this.savedTypeTap,
-    this.savedTapLocation,
+    this.savedTapLocationLatitude,
+    this.savedTapLocationLongitude,
     // this.savedisSaved,
   });
 
@@ -27,7 +27,8 @@ class FlowSaved {
         this.savedDistance = map['Distance'],
         this.savedFlowing = map['Flowing'],
         this.savedTypeTap = map['TypeTap'],
-        this.savedTapLocation = map['Location'];
+        this.savedTapLocationLatitude = map['LocationLat'],
+        this.savedTapLocationLongitude = map['LocationLong'];
   //  this.savedisSaved = map['isSaved'];
 
   ///convert from flowSaved Object to a map
@@ -38,7 +39,8 @@ class FlowSaved {
       'Distance': this.savedDistance,
       'Flowing': this.savedFlowing,
       'TypeTap': this.savedTypeTap,
-      'Location': this.savedTapLocation,
+      'LocationLat': this.savedTapLocationLatitude,
+      'LocationLong': this.savedTapLocationLongitude,
       // 'isSaved': this.savedisSaved,
     };
   }

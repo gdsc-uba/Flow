@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flow/Components/Permissions.dart';
-import 'package:flow/Components/flow_location.dart';
 import 'package:flow/Screens/FlowAskPermissionsScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -4,7 +4,6 @@ import 'package:flow/Screens/FlowSavedScreen.dart';
 import 'package:flow/Screens/FlowAboutScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flow/constants.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -34,16 +33,16 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        elevation: 10,
-        selectedItemColor: primarycolor,
-        unselectedItemColor: textcolor.withOpacity(.7),
+        elevation: 0,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black.withOpacity(.3),
         currentIndex: currentMenuIndex,
         onTap: (value) {
           currentMenuIndex = value;
           setState(() {});
         },
-        showUnselectedLabels: true,
-        showSelectedLabels: true,
+        showUnselectedLabels: false,
+        showSelectedLabels: false,
         selectedFontSize: 12,
         unselectedFontSize: 12,
         items: [
@@ -51,44 +50,44 @@ class _FlowBottomNavBarState extends State<FlowBottomNavBar> {
             label: ('Home'),
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-home.svg',
-              color: textcolor.withOpacity(.9),
+              color: Colors.black.withOpacity(.3),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-home.svg',
-              color: primarycolor,
+              color: Colors.black,
             ),
           ),
           BottomNavigationBarItem(
             label: 'Find',
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-search.svg',
-              color: textcolor.withOpacity(.9),
+              color: Colors.black.withOpacity(.3),
             ),
             activeIcon: SvgPicture.asset(
-              'Assets/icons/svgs/fi-rr-search.svg',
-              color: primarycolor,
+              'Assets/icons/svgs/fi-sr-search.svg',
+              color: Colors.black,
             ),
           ),
           BottomNavigationBarItem(
             label: 'Saved',
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-heart.svg',
-              color: textcolor.withOpacity(.9),
+              color: Colors.black.withOpacity(.3),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-heart.svg',
-              color: primarycolor,
+              color: Colors.black,
             ),
           ),
           BottomNavigationBarItem(
             label: 'About',
             icon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-user.svg',
-              color: textcolor.withOpacity(.9),
+              color: Colors.black.withOpacity(.3),
             ),
             activeIcon: SvgPicture.asset(
               'Assets/icons/svgs/fi-rr-user.svg',
-              color: primarycolor,
+              color: Colors.black,
             ),
           ),
         ],
